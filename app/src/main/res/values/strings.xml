@@ -1,4 +1,45 @@
 <resources>
     <string name="app_name">Zenmap</string>
     <string name="action_settings">Settings</string>
+
+    <!-- New scan dialogs -->
+
+    <string name="new_scan">New Scan</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="scan_type">Scan type</string>
+
+    <!-- Network scan dialog -->
+
+    <string name="network_scan_title">Network scan</string>
+    <string-array name="network_scan_types">
+        <item>Host discovery</item>
+        <item>Another</item>
+    </string-array>
+
+    <string name="network_target">Target network</string>
+    <string name="network_target_hint">192.168.0.0/24</string>
+
+    <!-- Host scan dialog -->
+
+    <string name="host_scan_title">Host scan</string>
+    <string-array name="host_scan_types">
+        <item>Intense scan</item>
+        <item>Intense scan, all TCP ports</item>
+    </string-array>
+
+    <string name="host_target">Target host</string>
+
+    <!-- Scan types -->
+
+    <array name="scan_types">
+        <item name="net_scan">@string/net_scan</item>
+        <item name="host_scan">@string/host_scan</item>
+    </array>
+
+    <string name="net_scan">Network scan</string>
+    <string name="host_scan">Host scan</string>
+
 </resources>
