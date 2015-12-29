@@ -1,5 +1,7 @@
 package me.fernandodominguez.zenmap.models;
 
+import android.content.Context;
+
 /**
  * Created by fernando on 28/12/15.
  */
@@ -32,5 +34,9 @@ public class Scan {
 
     public void setIntensity(String intensity) {
         this.intensity = intensity;
+    }
+
+    public void run(Context context) {
+        new NmapExecutor(context).execute(this);
     }
 }

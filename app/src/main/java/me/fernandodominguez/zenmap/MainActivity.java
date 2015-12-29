@@ -1,18 +1,19 @@
 package me.fernandodominguez.zenmap;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -26,6 +27,7 @@ import java.io.OutputStream;
 
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.helpers.FileHelper;
+import me.fernandodominguez.zenmap.helpers.ScanHelper;
 import me.fernandodominguez.zenmap.models.Nmap;
 import me.fernandodominguez.zenmap.models.Scan;
 
@@ -35,12 +37,23 @@ public class MainActivity extends AppCompatActivity {
 
     private Scan newScan = null;
 
+    private final Context context = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        try {
+            TextView textview = (TextView) findViewById(R.id.hello_world);
+            textview.setText( new Nmap(this).version() );
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -54,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             installNmap();
-            Nmap nmap = new Nmap(this);
-            Log.d("NMAP VERSION", nmap.version());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -129,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         newScan = configureScanFromDialog(dialog, newScan);
+                        newScan.run(context);
                     }
                 })
                 .cancelable(false)
@@ -141,7 +153,8 @@ public class MainActivity extends AppCompatActivity {
         Spinner  intensitySpinner = (Spinner) view.findViewById(R.id.intensity_spinner);
 
         scan.setTarget(targetEditText.getText().toString());
-        scan.setIntensity(intensitySpinner.getSelectedItem().toString());
+        String intensity = ScanHelper.intensityKeyFromValue(this, intensitySpinner.getSelectedItem().toString());
+        scan.setIntensity(intensity);
 
         return scan;
     }
@@ -149,18 +162,17 @@ public class MainActivity extends AppCompatActivity {
     private void installNmap() throws Exception {
 
         String dir = getFilesDir() + "/bin/";
-        File nmap = new File(dir + NMAP_BINARY_FILE);
-        if (nmap.exists()) return;
 
         AssetManager assetManager = getAssets();
         String[] files = null;
-        try {
-            files = assetManager.list("");
-            for (String file : files) {
-                if (file.equals(NMAP_BINARY_FILE)) {
-                    InputStream stream = this.getAssets().open(file);
+        files = assetManager.list("bin");
+        for (String file : files) {
+            if (!new File(dir + file).exists()) {
+                try {
+                    //FIXME directories not copying
+                    InputStream stream = this.getAssets().open("bin/" + file);
                     new File(dir).mkdir();
-                    OutputStream output = new BufferedOutputStream(new FileOutputStream(dir + NMAP_BINARY_FILE));
+                    OutputStream output = new BufferedOutputStream(new FileOutputStream(dir + file));
 
                     byte data[] = new byte[1024];
                     int count;
@@ -169,17 +181,15 @@ public class MainActivity extends AppCompatActivity {
                         output.write(data, 0, count);
                     }
 
-                    FileHelper.chmod(new File(dir + NMAP_BINARY_FILE), 0550);
+                    if (file.equals(NMAP_BINARY_FILE)) FileHelper.chmod(new File(dir + NMAP_BINARY_FILE), 0550);
                     output.flush();
                     output.close();
                     stream.close();
+                } catch (IOException e) {
+                    Log.e("tag", "Failed to copy" + file, e);
                 }
             }
-
-        } catch (IOException e) {
-            Log.e("tag", "Failed to get asset file list.", e);
         }
-
     }
 
     /* Lifecycle methods */

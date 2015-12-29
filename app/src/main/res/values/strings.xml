@@ -15,9 +15,10 @@
 
     <string name="network_scan_title">Network scan</string>
     <string-array name="network_scan_types">
-        <item>Host discovery</item>
-        <item>Another</item>
+        <item>@string/host_discovery</item>
     </string-array>
+
+    <string name="host_discovery">Host discovery</string>
 
     <string name="network_target">Target network</string>
     <string name="network_target_hint">192.168.0.0/24</string>
@@ -26,9 +27,14 @@
 
     <string name="host_scan_title">Host scan</string>
     <string-array name="host_scan_types">
-        <item>Intense scan</item>
-        <item>Intense scan, all TCP ports</item>
+        <item>@string/regular_scan</item>
+        <item>@string/intense_scan</item>
+        <item>@string/intense_scan_all_tcp_ports</item>
     </string-array>
+
+    <string name="regular_scan">Regular scan</string>
+    <string name="intense_scan">Intense scan</string>
+    <string name="intense_scan_all_tcp_ports">Intense scan, all TCP ports</string>
 
     <string name="host_target">Target host</string>
 
@@ -41,5 +47,12 @@
 
     <string name="net_scan">Network scan</string>
     <string name="host_scan">Host scan</string>
+
+    <!-- Scan options -->
+    <string name="version_opts">--version</string>
+    <string name="regular_scan_opts">-v</string>
+    <string name="intense_scan_opts">-A -T4 -v</string>
+    <string name="intense_scan_all_tcp_opts">-p 1-65535 -A -T4 -v</string>
+    <string name="host_discovery_opts">-sP -v</string>
 
 </resources>
