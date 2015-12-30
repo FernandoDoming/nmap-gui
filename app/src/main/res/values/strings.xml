@@ -53,6 +53,7 @@
     <string name="regular_scan_opts">-v</string>
     <string name="intense_scan_opts">-A -T4 -v</string>
     <string name="intense_scan_all_tcp_opts">-p 1-65535 -A -T4 -v</string>
-    <string name="host_discovery_opts">-sP -v</string>
+    <string name="host_discovery_opts">-sP -v --reason</string>
+    <string name="xml_opt">-oX -</string>
 
 </resources>

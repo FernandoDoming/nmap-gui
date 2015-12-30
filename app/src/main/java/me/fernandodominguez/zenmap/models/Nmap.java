@@ -44,7 +44,8 @@ public class Nmap {
     }
 
     private String execute(String options, String target) throws IOException, InterruptedException {
-        Process nmap = Runtime.getRuntime().exec(binary + " " + options + " " + target);
+        String xml = context.getResources().getString(R.string.xml_opt);
+        Process nmap = Runtime.getRuntime().exec(binary + " " + options + " " + xml + " " + target);
         nmap.waitFor();
         BufferedReader in = new BufferedReader(new InputStreamReader(nmap.getInputStream()));
         String output = "";
@@ -54,6 +55,6 @@ public class Nmap {
             output += "\n" + line;
         }
 
-        return output;
+        return output.trim();
     }
 }

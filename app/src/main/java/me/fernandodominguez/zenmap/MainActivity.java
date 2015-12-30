@@ -49,9 +49,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             TextView textview = (TextView) findViewById(R.id.hello_world);
             textview.setText( new Nmap(this).version() );
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -60,15 +58,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 newScan();
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
             }
         });
 
         try {
             installNmap();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
