@@ -17,4 +17,13 @@ public class HostScan extends ScanResult {
         this.address = address;
         this.hostname = hostname;
     }
+
+    @Override
+    public String getTitle() {
+        if (hostname != null && !hostname.equals("")) {
+            return hostname;
+        } else {
+            return address;
+        }
+    }
 }

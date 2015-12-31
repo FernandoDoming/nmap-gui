@@ -12,8 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -24,18 +25,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
+import me.fernandodominguez.zenmap.adapters.ScansListAdapter;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.helpers.FileHelper;
 import me.fernandodominguez.zenmap.helpers.ScanHelper;
-import me.fernandodominguez.zenmap.models.Nmap;
 import me.fernandodominguez.zenmap.models.Scan;
+import me.fernandodominguez.zenmap.models.ScanResult;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String NMAP_BINARY_FILE = "nmap";
 
     private Scan newScan = null;
+    private ScansListAdapter adapter = null;
+
+    private ProgressBar scanProgress;
+    private ListView    scanList;
 
     private final Context context = this;
 
@@ -44,14 +51,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        scanProgress = (ProgressBar) findViewById(R.id.scan_progress);
+        scanList     = (ListView) findViewById(R.id.scans_list);
         setSupportActionBar(toolbar);
 
-        try {
-            TextView textview = (TextView) findViewById(R.id.hello_world);
-            textview.setText( new Nmap(this).version() );
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        adapter = new ScansListAdapter(this, new ArrayList<ScanResult>());
+        scanList.setAdapter(adapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         newScan = configureScanFromDialog(dialog, newScan);
                         newScan.run(context);
+                        scanProgress.setIndeterminate(true);
                     }
                 })
                 .cancelable(false)
@@ -184,6 +190,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public ScansListAdapter getAdapter() {
+        return adapter;
     }
 
     /* Lifecycle methods */

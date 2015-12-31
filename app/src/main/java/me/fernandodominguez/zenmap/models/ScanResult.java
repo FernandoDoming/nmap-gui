@@ -7,4 +7,25 @@ public abstract class ScanResult implements IScanResult {
     protected long startTime;
     protected long endTime;
     protected String scanStatus;
+    protected String output;
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public String getScanStatus() {
+        return scanStatus;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
+    public void setOutput(String output) {
+        this.output = output;
+    }
 }

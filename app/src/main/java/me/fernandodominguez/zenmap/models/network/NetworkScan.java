@@ -13,4 +13,10 @@ public class NetworkScan extends ScanResult {
     public NetworkScan(List<Host> hosts) {
         this.hosts = hosts;
     }
+
+    @Override
+    public String getTitle() {
+        // TODO save network & return it
+        return "Network Scan";
+    }
 }

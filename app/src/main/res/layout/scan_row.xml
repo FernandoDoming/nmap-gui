@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:src="@drawable/network_server" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/scan_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Title" />
+
+        <TextView
+            android:id="@+id/scan_result"
+            android:layout_below="@id/scan_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Result" />
+
+    </RelativeLayout>
+
+</LinearLayout>

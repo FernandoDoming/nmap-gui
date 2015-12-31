@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Xml;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -12,6 +13,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.StringReader;
 
+import me.fernandodominguez.zenmap.MainActivity;
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.parsers.HostScanParser;
@@ -20,7 +22,7 @@ import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
 /**
  * Created by fernando on 29/12/15.
  */
-public class NmapExecutor extends AsyncTask<Scan, Integer, String> {
+public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
 
     private Context context;
     private Nmap nmap;
@@ -39,19 +41,19 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, String> {
     }
 
     @Override
-    protected String doInBackground(Scan... params) {
+    protected ScanResult doInBackground(Scan... params) {
         scan = params[0];
-        String result = null;
+        String output = null;
 
         try {
             if (scan.getIntensity().equals(ScanTypes.INTENSE_SCAN)) {
-                result = nmap.intenseScan(scan.getTarget());
+                output = nmap.intenseScan(scan.getTarget());
             } else if (scan.getIntensity().equals(ScanTypes.INTENSE_SCAN_ALL_TCP_PORTS)) {
-                result = nmap.intenseScanAllTcpPorts(scan.getTarget());
+                output = nmap.intenseScanAllTcpPorts(scan.getTarget());
             } else if (scan.getIntensity().equals(ScanTypes.HOST_DISCOVERY)) {
-                result = nmap.hostDiscovery(scan.getTarget());
+                output = nmap.hostDiscovery(scan.getTarget());
             } else if (scan.getIntensity().equals(ScanTypes.REGULAR_SCAN)) {
-                result = nmap.regularScan(scan.getTarget());
+                output = nmap.regularScan(scan.getTarget());
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -61,16 +63,17 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, String> {
         XmlPullParser parser = Xml.newPullParser();
         ScanResult scanResult = null;
         try {
-            parser.setInput(new StringReader(result));
+            parser.setInput(new StringReader(output));
             if (scan.getType() == ScanTypes.HOST_SCAN) {
                 scanResult = new HostScanParser().parse(parser);
             } else if (scan.getType() == ScanTypes.NETWORK_SCAN) {
                 scanResult = new NetworkScanParser().parse(parser);
             }
+            if (scanResult != null) scanResult.setOutput(output);
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
         }
-        return result;
+        return scanResult;
     }
 
     @Override
@@ -79,9 +82,11 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, String> {
     }
 
     @Override
-    protected void onPostExecute(String result) {
-        textView.setText(result);
-
+    protected void onPostExecute(ScanResult result) {
+        textView.setText(result.getOutput());
+        ((MainActivity) context).getAdapter().addScan(result);
+        ProgressBar scanProgress = (ProgressBar) ((Activity) context).findViewById(R.id.scan_progress);
+        scanProgress.setIndeterminate(false);
     }
 
     /* XML Parsing */
