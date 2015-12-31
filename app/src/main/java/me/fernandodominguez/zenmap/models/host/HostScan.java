@@ -20,6 +20,11 @@ public class HostScan extends ScanResult {
 
     @Override
     public String getTitle() {
+        return getTarget();
+    }
+
+    @Override
+    public String getTarget() {
         if (hostname != null && !hostname.equals("")) {
             return hostname;
         } else {

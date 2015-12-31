@@ -68,6 +68,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
                 scanResult = new HostScanParser().parse(parser);
             } else if (scan.getType() == ScanTypes.NETWORK_SCAN) {
                 scanResult = new NetworkScanParser().parse(parser);
+                scanResult.setTarget(scan.getTarget());
             }
             if (scanResult != null) scanResult.setOutput(output);
         } catch (XmlPullParserException | IOException e) {

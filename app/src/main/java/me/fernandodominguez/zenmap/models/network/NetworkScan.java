@@ -16,7 +16,6 @@ public class NetworkScan extends ScanResult {
 
     @Override
     public String getTitle() {
-        // TODO save network & return it
-        return "Network Scan";
+        return super.getTarget();
     }
 }
