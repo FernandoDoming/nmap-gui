@@ -70,7 +70,10 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
                 scanResult = new NetworkScanParser().parse(parser);
                 scanResult.setTarget(scan.getTarget());
             }
-            if (scanResult != null) scanResult.setOutput(output);
+            if (scanResult != null) {
+                scanResult.setOutput(output);
+                scanResult.saveWithChildren();
+            }
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
         }

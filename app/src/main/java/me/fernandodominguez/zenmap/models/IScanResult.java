@@ -5,4 +5,5 @@ package me.fernandodominguez.zenmap.models;
  */
 public interface IScanResult {
     String getTitle();
+    void saveWithChildren();
 }

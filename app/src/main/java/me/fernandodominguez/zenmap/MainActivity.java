@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import me.fernandodominguez.zenmap.adapters.ScansListAdapter;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
@@ -33,6 +34,8 @@ import me.fernandodominguez.zenmap.helpers.FileHelper;
 import me.fernandodominguez.zenmap.helpers.ScanHelper;
 import me.fernandodominguez.zenmap.models.Scan;
 import me.fernandodominguez.zenmap.models.ScanResult;
+import me.fernandodominguez.zenmap.models.host.HostScan;
+import me.fernandodominguez.zenmap.models.network.NetworkScan;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private ScansListAdapter adapter = null;
 
     private ProgressBar scanProgress;
-    private ListView    scanList;
+    private ListView scanListView;
 
     private final Context context = this;
 
@@ -52,11 +55,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         scanProgress = (ProgressBar) findViewById(R.id.scan_progress);
-        scanList     = (ListView) findViewById(R.id.scans_list);
+        scanListView = (ListView) findViewById(R.id.scans_list);
         setSupportActionBar(toolbar);
 
-        adapter = new ScansListAdapter(this, new ArrayList<ScanResult>());
-        scanList.setAdapter(adapter);
+        List<HostScan> hostScans = HostScan.all();
+        List<NetworkScan> networkScans = NetworkScan.all();
+        List<ScanResult> scans = new ArrayList<>();
+        scans.addAll(hostScans);
+        scans.addAll(networkScans);
+
+        adapter = new ScansListAdapter(this, scans);
+        scanListView.setAdapter(adapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
