@@ -13,8 +13,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.StringReader;
 
-import me.fernandodominguez.zenmap.MainActivity;
 import me.fernandodominguez.zenmap.R;
+import me.fernandodominguez.zenmap.activities.MainActivity;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.parsers.HostScanParser;
 import me.fernandodominguez.zenmap.parsers.NetworkScanParser;

@@ -1,4 +1,4 @@
-package me.fernandodominguez.zenmap;
+package me.fernandodominguez.zenmap.activities;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.ScansListAdapter;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.helpers.FileHelper;
