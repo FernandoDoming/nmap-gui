@@ -3,10 +3,12 @@ package me.fernandodominguez.zenmap.models.host;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 
+import java.io.Serializable;
+
 /**
  * Created by fernando on 30/12/15.
  */
-public class PortStatus extends Model {
+public class PortStatus extends Model implements Serializable {
 
     @Column(name = "State")
     private String state;

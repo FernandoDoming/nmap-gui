@@ -4,11 +4,13 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
+import java.io.Serializable;
+
 /**
  * Created by fernando on 30/12/15.
  */
 @Table(name = "ScanResults")
-public abstract class ScanResult extends Model implements IScanResult {
+public abstract class ScanResult extends Model implements IScanResult, Serializable {
 
     @Column(name = "Target")
     protected String target;

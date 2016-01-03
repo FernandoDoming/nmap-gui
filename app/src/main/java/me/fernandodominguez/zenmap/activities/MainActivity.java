@@ -1,6 +1,7 @@
 package me.fernandodominguez.zenmap.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private final String NMAP_BINARY_FILE = "nmap";
 
     private Scan newScan = null;
+    private List<ScanResult> scans = new ArrayList<>();
     private ScansListAdapter adapter = null;
 
     private ProgressBar scanProgress;
@@ -61,12 +64,19 @@ public class MainActivity extends AppCompatActivity {
 
         List<HostScan> hostScans = HostScan.all();
         List<NetworkScan> networkScans = NetworkScan.all();
-        List<ScanResult> scans = new ArrayList<>();
         scans.addAll(hostScans);
         scans.addAll(networkScans);
 
         adapter = new ScansListAdapter(this, scans);
         scanListView.setAdapter(adapter);
+        scanListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(context, ScanDetailActivity.class);
+                intent.putExtra("scan", scans.get(position));
+                context.startActivity(intent);
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

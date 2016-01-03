@@ -55,5 +55,7 @@
     <string name="intense_scan_all_tcp_opts">-p 1-65535 -A -T4 -v</string>
     <string name="host_discovery_opts">-sP -v --reason</string>
     <string name="xml_opt">-oX -</string>
+    <string name="title_activity_scan_detail">ScanDetailActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 
 </resources>

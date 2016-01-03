@@ -4,11 +4,13 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
+import java.io.Serializable;
+
 /**
  * Created by fernando on 30/12/15.
  */
 @Table(name = "Hosts")
-public class Host extends Model {
+public class Host extends Model implements Serializable {
 
     @Column(name = "Address")
     private String address;

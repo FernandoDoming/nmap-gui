@@ -87,7 +87,6 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
 
     @Override
     protected void onPostExecute(ScanResult result) {
-        textView.setText(result.getOutput());
         ((MainActivity) context).getAdapter().addScan(result);
         ProgressBar scanProgress = (ProgressBar) ((Activity) context).findViewById(R.id.scan_progress);
         scanProgress.setIndeterminate(false);
