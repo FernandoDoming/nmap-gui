@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Xml;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -28,8 +27,6 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
     private Nmap nmap;
     private Scan scan;
 
-    private TextView textView;
-
     public NmapExecutor(Context context) {
         this.context = context;
         this.nmap = new Nmap(context);
@@ -37,7 +34,6 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
 
     @Override
     protected void onPreExecute() {
-        textView = (TextView) ((Activity) context).findViewById(R.id.hello_world);
     }
 
     @Override

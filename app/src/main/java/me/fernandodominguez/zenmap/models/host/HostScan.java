@@ -49,6 +49,15 @@ public class HostScan extends ScanResult {
     }
 
     @Override
+    public String getResult() {
+        if (ports.size() == 1) {
+            return ports.size() + " detected port open.";
+        } else {
+            return ports.size() + " detected ports open.";
+        }
+    }
+
+    @Override
     public void saveWithChildren() {
         this.save();
         if (this.ports != null) {

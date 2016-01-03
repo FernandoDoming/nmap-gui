@@ -31,6 +31,15 @@ public class NetworkScan extends ScanResult {
         return super.getTarget();
     }
 
+    @Override
+    public String getResult() {
+        if (hosts.size() == 1) {
+            return hosts.size() + " detected host up.";
+        } else {
+            return hosts.size() + " detected hosts up.";
+        }
+    }
+
     public List<Host> getHosts() {
         if (hosts == null) hosts = getMany(Host.class, "NetworkScan");
         for (Host host : hosts) {

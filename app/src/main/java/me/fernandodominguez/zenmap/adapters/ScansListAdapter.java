@@ -55,7 +55,8 @@ public class ScansListAdapter extends BaseAdapter {
 
         ScanResult result = scans.get(position);
         scanTitle.setText(result.getTitle());
-        // change the icon for Windows and iPhone
+        scanResult.setText(result.getResult());
+
         if (result instanceof NetworkScan) {
             imageView.setImageResource(R.drawable.network);
         } else if (result instanceof HostScan) {
