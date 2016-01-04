@@ -67,5 +67,8 @@
 
     <string name="title_activity_scan_detail">ScanDetailActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="target_title">Target</string>
+    <string name="start_time_title">Start time</string>
+    <string name="end_time_title">End time</string>
 
 </resources>

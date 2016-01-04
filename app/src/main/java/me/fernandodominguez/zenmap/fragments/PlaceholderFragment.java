@@ -9,7 +9,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import me.fernandodominguez.zenmap.R;
-import me.fernandodominguez.zenmap.adapters.GeneralPropertiesListAdapter;
 import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
 import me.fernandodominguez.zenmap.models.ScanResult;
 import me.fernandodominguez.zenmap.models.host.HostScan;
@@ -59,9 +58,7 @@ public class PlaceholderFragment extends Fragment {
             case GENERAL_SECTION_NUMBER:
                 rootView = inflater.inflate(R.layout.scan_general_results_layout, container, false);
                 ListView resultsListView = (ListView) rootView.findViewById(R.id.general_result_listview);
-                ListView propertiesListView = (ListView) rootView.findViewById(R.id.general_properties_listview);
-                GeneralPropertiesListAdapter propertiesAdapter = new GeneralPropertiesListAdapter(getActivity(), scanResult);
-                propertiesListView.setAdapter(propertiesAdapter);
+
                 if (scanResult instanceof NetworkScan) {
                     NetworkScan networkScan = (NetworkScan) scanResult;
                     GeneralResultsListAdapter<Host> adapter = new GeneralResultsListAdapter<>(getActivity(), networkScan.getHosts());
@@ -71,7 +68,12 @@ public class PlaceholderFragment extends Fragment {
                     GeneralResultsListAdapter<Port> adapter = new GeneralResultsListAdapter<>(getActivity(), hostScan.getPorts());
                     resultsListView.setAdapter(adapter);
                 }
+
+                View header = inflater.inflate(R.layout.scan_general_properties, container, false);
+                fillHeader(header, scanResult);
+                resultsListView.addHeaderView(header);
                 break;
+
             case RAW_SECTION_NUMBER:
                 rootView = inflater.inflate(R.layout.scan_raw_results_layout, container, false);
                 TextView rawOutput = (TextView) rootView.findViewById(R.id.section_label);
@@ -79,5 +81,15 @@ public class PlaceholderFragment extends Fragment {
                 break;
         }
         return rootView;
+    }
+
+    private void fillHeader(View header, ScanResult scanResult) {
+        TextView target = (TextView) header.findViewById(R.id.target);
+        TextView startTime = (TextView) header.findViewById(R.id.start_time);
+        TextView endTime = (TextView) header.findViewById(R.id.end_time);
+
+        target.setText(scanResult.getTarget());
+        startTime.setText( String.valueOf(scanResult.getStartTime()) );
+        endTime.setText( String.valueOf(scanResult.getEndTime()) );
     }
 }
