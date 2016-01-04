@@ -22,4 +22,16 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="PropertyName">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/material_grey_600</item>
+    </style>
+
+    <style name="PropertyValue">
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/material_grey_600</item>
+    </style>
+
 </resources>
