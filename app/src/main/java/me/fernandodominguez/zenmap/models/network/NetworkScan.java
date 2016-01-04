@@ -34,10 +34,11 @@ public class NetworkScan extends ScanResult {
 
     @Override
     public String getResult() {
-        if (hosts.size() == 1) {
-            return hosts.size() + " detected host up.";
+        List<Host> upHosts = getUpHosts();
+        if (upHosts.size() == 1) {
+            return upHosts.size() + " detected host up.";
         } else {
-            return hosts.size() + " detected hosts up.";
+            return upHosts.size() + " detected hosts up.";
         }
     }
 
