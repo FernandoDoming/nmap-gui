@@ -16,6 +16,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private final String SECTION_1_TITLE = "General";
     private final String SECTION_2_TITLE = "";
     private final String SECTION_3_TITLE = "RAW";
+    private final int    NUM_PAGES       = 3;
 
     private ScanResult scanResult;
 
@@ -27,14 +28,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
         return PlaceholderFragment.newInstance(position + 1, scanResult);
     }
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
-        return 3;
+        return NUM_PAGES;
     }
 
     @Override

@@ -5,10 +5,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import me.fernandodominguez.zenmap.R;
+import me.fernandodominguez.zenmap.adapters.GeneralPropertiesListAdapter;
+import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
 import me.fernandodominguez.zenmap.models.ScanResult;
+import me.fernandodominguez.zenmap.models.host.HostScan;
+import me.fernandodominguez.zenmap.models.host.Port;
+import me.fernandodominguez.zenmap.models.network.Host;
+import me.fernandodominguez.zenmap.models.network.NetworkScan;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -50,12 +57,25 @@ public class PlaceholderFragment extends Fragment {
 
         switch (sectionNumber) {
             case GENERAL_SECTION_NUMBER:
-
+                rootView = inflater.inflate(R.layout.scan_general_results_layout, container, false);
+                ListView resultsListView = (ListView) rootView.findViewById(R.id.general_result_listview);
+                ListView propertiesListView = (ListView) rootView.findViewById(R.id.general_properties_listview);
+                GeneralPropertiesListAdapter propertiesAdapter = new GeneralPropertiesListAdapter(getActivity(), scanResult);
+                propertiesListView.setAdapter(propertiesAdapter);
+                if (scanResult instanceof NetworkScan) {
+                    NetworkScan networkScan = (NetworkScan) scanResult;
+                    GeneralResultsListAdapter<Host> adapter = new GeneralResultsListAdapter<>(getActivity(), networkScan.getHosts());
+                    resultsListView.setAdapter(adapter);
+                } else if (scanResult instanceof HostScan) {
+                    HostScan hostScan = (HostScan) scanResult;
+                    GeneralResultsListAdapter<Port> adapter = new GeneralResultsListAdapter<>(getActivity(), hostScan.getPorts());
+                    resultsListView.setAdapter(adapter);
+                }
                 break;
             case RAW_SECTION_NUMBER:
-                rootView = inflater.inflate(R.layout.fragment_scan_detail, container, false);
-                TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-                textView.setText(scanResult.getOutput());
+                rootView = inflater.inflate(R.layout.scan_raw_results_layout, container, false);
+                TextView rawOutput = (TextView) rootView.findViewById(R.id.section_label);
+                rawOutput.setText(scanResult.getOutput());
                 break;
         }
         return rootView;
