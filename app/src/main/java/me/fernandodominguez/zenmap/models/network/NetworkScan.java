@@ -4,6 +4,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.fernandodominguez.zenmap.models.ScanResult;
@@ -46,6 +47,17 @@ public class NetworkScan extends ScanResult {
             host.getStatus();
         }
         return hosts;
+    }
+
+    public List<Host> getUpHosts() {
+        List<Host> allHosts = getHosts();
+        List<Host> upHosts = new ArrayList<>();
+        for (Host host : allHosts) {
+            if (host.getStatus().getState().equals(HostStatus.UP)) {
+                upHosts.add(host);
+            }
+        }
+        return upHosts;
     }
 
     @Override

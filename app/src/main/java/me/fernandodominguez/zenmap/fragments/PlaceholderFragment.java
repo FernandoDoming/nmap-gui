@@ -61,7 +61,7 @@ public class PlaceholderFragment extends Fragment {
 
                 if (scanResult instanceof NetworkScan) {
                     NetworkScan networkScan = (NetworkScan) scanResult;
-                    GeneralResultsListAdapter<Host> adapter = new GeneralResultsListAdapter<>(getActivity(), networkScan.getHosts());
+                    GeneralResultsListAdapter<Host> adapter = new GeneralResultsListAdapter<>(getActivity(), networkScan.getUpHosts());
                     resultsListView.setAdapter(adapter);
                 } else if (scanResult instanceof HostScan) {
                     HostScan hostScan = (HostScan) scanResult;
