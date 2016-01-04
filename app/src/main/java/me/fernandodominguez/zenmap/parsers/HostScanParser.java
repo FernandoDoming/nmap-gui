@@ -19,6 +19,7 @@ public class HostScanParser {
     private String ns = null;
 
     public HostScan parse(XmlPullParser parser) throws IOException, XmlPullParserException {
+        HostScan hostScan = new HostScan();
         List<Port> ports = new ArrayList<>();
         String hostname  = null;
         String address   = null;
@@ -34,9 +35,17 @@ public class HostScanParser {
                 ports = readPorts(parser);
             } else if (name.equals("hostname")) {
                 hostname = readHostname(parser);
+            } else if (name.equals("finished")) {
+                hostScan.setEndTime( Long.parseLong(parser.getAttributeValue(null, "time")) );
+                hostScan.setElapsed( Float.parseFloat(parser.getAttributeValue(null, "elapsed")) );
+            } else if (name.equals("nmaprun")) {
+                hostScan.setStartTime( Long.parseLong(parser.getAttributeValue(null, "start")) );
             }
         }
-        return new HostScan(ports, hostname, address);
+        hostScan.setPorts(ports);
+        hostScan.setHostname(hostname);
+        hostScan.setAddress(address);
+        return hostScan;
     }
 
     private List<Port> readPorts(XmlPullParser parser) throws XmlPullParserException, IOException {

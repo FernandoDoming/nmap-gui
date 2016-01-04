@@ -21,6 +21,7 @@ public class NetworkScanParser {
     public NetworkScan parse(XmlPullParser parser) throws IOException, XmlPullParserException {
         List<Host> hosts = new ArrayList<>();
 
+        NetworkScan networkScan = new NetworkScan();
         while (parser.next() != XmlPullParser.END_DOCUMENT) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -28,9 +29,15 @@ public class NetworkScanParser {
             String name = parser.getName();
             if (name.equals("host")) {
                 hosts.add(readHost(parser));
+            } else if (name.equals("finished")) {
+                networkScan.setEndTime( Long.parseLong(parser.getAttributeValue(null, "time")) );
+                networkScan.setElapsed( Float.parseFloat(parser.getAttributeValue(null, "elapsed")) );
+            } else if (name.equals("nmaprun")) {
+                networkScan.setStartTime( Long.parseLong(parser.getAttributeValue(null, "start")) );
             }
         }
-        return new NetworkScan(hosts);
+        networkScan.setHosts(hosts);
+        return networkScan;
     }
 
     private Host readHost(XmlPullParser parser) throws XmlPullParserException, IOException {

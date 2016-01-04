@@ -43,6 +43,18 @@ public class HostScan extends ScanResult {
         return ports;
     }
 
+    public void setPorts(List<Port> ports) {
+        this.ports = ports;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
     @Override
     public String getTitle() {
         return getTarget();

@@ -50,6 +50,10 @@ public class NetworkScan extends ScanResult {
         return hosts;
     }
 
+    public void setHosts(List<Host> hosts) {
+        this.hosts = hosts;
+    }
+
     public List<Host> getUpHosts() {
         List<Host> allHosts = getHosts();
         List<Host> upHosts = new ArrayList<>();

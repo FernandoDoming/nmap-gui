@@ -21,6 +21,9 @@ public abstract class ScanResult extends Model implements IScanResult, Serializa
     @Column(name = "EndTime")
     protected long endTime;
 
+    @Column(name = "Elapsed")
+    protected float elapsed;
+
     @Column(name = "ScanStatus")
     protected String scanStatus;
 
@@ -37,8 +40,24 @@ public abstract class ScanResult extends Model implements IScanResult, Serializa
         return startTime;
     }
 
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
     public long getEndTime() {
         return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    public float getElapsed() {
+        return elapsed;
+    }
+
+    public void setElapsed(float elapsed) {
+        this.elapsed = elapsed;
     }
 
     public String getScanStatus() {
