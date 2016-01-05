@@ -3,12 +3,16 @@ package me.fernandodominguez.zenmap.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView scanListView;
 
     private final Context context = this;
+    private ActionMode actionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +82,13 @@ public class MainActivity extends AppCompatActivity {
                 context.startActivity(intent);
             }
         });
+        scanListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                onListItemSelect(position);
+                return true;
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +106,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /* Private methods */
+
+    private void onListItemSelect(int position) {
+        adapter.toggleSelection(position);
+        boolean hasSelectedElements = adapter.getSelectedCount() > 0;
+
+        if (hasSelectedElements && actionMode == null) {
+            actionMode = startActionMode(new ActionModeCallback());
+        } else if (!hasSelectedElements && actionMode != null) {
+            actionMode.finish();
+        }
+    }
 
     private void newScan() {
 
@@ -238,5 +261,53 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /** ActionModeCallback inner class **/
+
+    public class ActionModeCallback implements ActionMode.Callback {
+
+        private int statusBarColor;
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.context_menu, menu);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                statusBarColor = getWindow().getStatusBarColor();
+                getWindow().setStatusBarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_delete:
+                    SparseBooleanArray selected = adapter.getSelectedIds();
+                    for (int i = (selected.size() - 1); i >= 0; i--) {
+                        ScanResult toDelete = adapter.getItem(selected.keyAt(i));
+                        adapter.delete(toDelete);
+                    }
+                    mode.finish();
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setStatusBarColor(statusBarColor);
+            }
+            adapter.removeSelection();
+            actionMode = null;
+        }
     }
 }

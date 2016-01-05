@@ -25,7 +25,7 @@ public class Port extends Model implements Serializable {
     private PortStatus status;
 
     // A port belongs in a HostScan
-    @Column(name = "HostScan")
+    @Column(name = "HostScan", onDelete = Column.ForeignKeyAction.CASCADE)
     protected HostScan hostScan;
 
     public Port() {

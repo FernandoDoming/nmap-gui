@@ -17,7 +17,7 @@ public class PortStatus extends Model implements Serializable {
     private String reason;
 
     // A port status belongs to a port
-    @Column(name = "Port")
+    @Column(name = "Port", onDelete = Column.ForeignKeyAction.CASCADE)
     protected Port port;
 
     public PortStatus() {

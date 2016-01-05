@@ -1,6 +1,7 @@
 package me.fernandodominguez.zenmap.adapters;
 
 import android.content.Context;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +21,14 @@ import me.fernandodominguez.zenmap.models.network.NetworkScan;
  */
 public class ScansListAdapter extends BaseAdapter {
 
-    private List<ScanResult> scans;
     private Context context;
+    private List<ScanResult> scans;
+    private SparseBooleanArray selectedItemsIds;
 
     public ScansListAdapter(Context context, List<ScanResult> scans) {
         this.scans = scans;
         this.context = context;
+        this.selectedItemsIds = new SparseBooleanArray();
     }
 
     @Override
@@ -34,7 +37,7 @@ public class ScansListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public ScanResult getItem(int position) {
         return scans.get(position);
     }
 
@@ -69,5 +72,39 @@ public class ScansListAdapter extends BaseAdapter {
     public void addScan(ScanResult scanResult) {
         scans.add(scanResult);
         this.notifyDataSetChanged();
+    }
+
+    public void toggleSelection(int position) {
+        selectView(position, !selectedItemsIds.get(position));
+    }
+
+    public int getSelectedCount() {
+        return selectedItemsIds.size();
+    }
+
+    private void selectView(int position, boolean value) {
+        if (value) {
+            selectedItemsIds.put(position, value);
+        } else {
+            selectedItemsIds.delete(position);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void removeSelection() {
+        selectedItemsIds = new SparseBooleanArray();
+        notifyDataSetChanged();
+    }
+
+    public SparseBooleanArray getSelectedIds() {
+        return selectedItemsIds;
+    }
+
+    public void delete(ScanResult toDelete) {
+        // Delete database record
+        toDelete.delete();
+        // Delete from ListView
+        scans.remove(toDelete);
+        notifyDataSetChanged();
     }
 }

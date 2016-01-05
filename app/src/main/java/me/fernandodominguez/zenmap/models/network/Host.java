@@ -19,7 +19,7 @@ public class Host extends Model implements Serializable {
     private HostStatus status;
 
     // Belongs to a NetworkScan
-    @Column(name = "NetworkScan")
+    @Column(name = "NetworkScan", onDelete = Column.ForeignKeyAction.CASCADE)
     protected NetworkScan networkScan;
 
     public Host() {

@@ -19,7 +19,7 @@ public class HostStatus extends Model implements Serializable {
     private String reason;
 
     // Belongs to a Host
-    @Column(name = "Host")
+    @Column(name = "Host", onDelete = Column.ForeignKeyAction.CASCADE)
     protected Host host;
 
     public static final String UP = "up";
