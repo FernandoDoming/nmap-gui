@@ -72,5 +72,6 @@
     <string name="end_time_title">End time</string>
     <string name="elapsed_time_title">Elapsed time</string>
     <string name="menu_delete">Delete</string>
+    <string name="scan_name">Name</string>
 
 </resources>

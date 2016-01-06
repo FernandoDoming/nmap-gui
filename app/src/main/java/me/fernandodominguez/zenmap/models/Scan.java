@@ -7,10 +7,19 @@ import android.content.Context;
  */
 public class Scan {
 
+    private String name;
     private int type;
     private String target;
     private String intensity;
 
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getType() {
         return type;

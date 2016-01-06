@@ -28,11 +28,6 @@ public class NetworkScan extends ScanResult {
     }
 
     @Override
-    public String getTitle() {
-        return super.getTarget();
-    }
-
-    @Override
     public String getResult() {
         List<Host> upHosts = getUpHosts();
         if (upHosts.size() == 1) {

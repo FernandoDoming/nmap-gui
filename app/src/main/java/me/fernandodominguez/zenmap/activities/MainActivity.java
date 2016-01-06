@@ -192,9 +192,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Scan configureScanFromDialog(MaterialDialog dialog, Scan scan) {
         View view = dialog.getCustomView();
+        EditText nameEditText = (EditText) view.findViewById(R.id.input_name);
         EditText targetEditText = (EditText) view.findViewById(R.id.input_target);
         Spinner  intensitySpinner = (Spinner) view.findViewById(R.id.intensity_spinner);
 
+        scan.setName(nameEditText.getText().toString());
         scan.setTarget(targetEditText.getText().toString());
         String intensity = ScanHelper.intensityKeyFromValue(this, intensitySpinner.getSelectedItem().toString());
         scan.setIntensity(intensity);

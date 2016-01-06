@@ -12,6 +12,9 @@ import java.io.Serializable;
 @Table(name = "ScanResults")
 public abstract class ScanResult extends Model implements IScanResult, Serializable {
 
+    @Column(name = "Name")
+    protected String name;
+
     @Column(name = "Target")
     protected String target;
 
@@ -30,11 +33,27 @@ public abstract class ScanResult extends Model implements IScanResult, Serializa
     @Column(name = "Output")
     protected String output;
 
+    /* Constructors */
+
     public ScanResult() {
         super();
     }
 
+    /* Public methods */
+
+    public String getTitle(){
+        return getName();
+    }
+
     /* Getters & setters */
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public long getStartTime() {
         return startTime;
