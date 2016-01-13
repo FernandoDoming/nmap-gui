@@ -88,7 +88,7 @@ public class ScansListAdapter extends BaseAdapter {
         } else {
             selectedItemsIds.delete(position);
         }
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     public void removeSelection() {

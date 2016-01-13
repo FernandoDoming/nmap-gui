@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         scanListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                onListItemSelect(position);
+                onListItemSelect(position, view);
                 return true;
             }
         });
@@ -107,14 +107,26 @@ public class MainActivity extends AppCompatActivity {
 
     /* Private methods */
 
-    private void onListItemSelect(int position) {
+    private void onListItemSelect(int position, View view) {
         adapter.toggleSelection(position);
         boolean hasSelectedElements = adapter.getSelectedCount() > 0;
 
         if (hasSelectedElements && actionMode == null) {
+            // Has selected items but action mode is not initiated
             actionMode = startActionMode(new ActionModeCallback());
+            actionMode.setTitle(adapter.getSelectedCount() + " items selected");
         } else if (!hasSelectedElements && actionMode != null) {
+            // Action mode is initiated but there are no selected items
             actionMode.finish();
+        }  else if (hasSelectedElements && actionMode != null) {
+            // Has selected items and action mode is initiated
+            actionMode.setTitle(adapter.getSelectedCount() + " items selected");
+        }
+
+        if (adapter.getSelectedIds().get(position)) {
+            view.setBackgroundColor(ContextCompat.getColor(context, R.color.light_grey));
+        } else {
+            view.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
         }
     }
 
@@ -283,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
+            return true;
         }
 
         @Override
