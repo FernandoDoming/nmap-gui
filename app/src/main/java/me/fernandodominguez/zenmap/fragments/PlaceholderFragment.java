@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
+import me.fernandodominguez.zenmap.helpers.DateHelper;
 import me.fernandodominguez.zenmap.models.ScanResult;
 import me.fernandodominguez.zenmap.models.host.HostScan;
 import me.fernandodominguez.zenmap.models.host.Port;
@@ -89,7 +90,7 @@ public class PlaceholderFragment extends Fragment {
         TextView endTime = (TextView) header.findViewById(R.id.end_time);
 
         target.setText(scanResult.getTarget());
-        startTime.setText( String.valueOf(scanResult.getStartTime()) );
-        endTime.setText( String.valueOf(scanResult.getEndTime()) );
+        startTime.setText( DateHelper.getDate(scanResult.getStartTime()) );
+        endTime.setText( DateHelper.getDate(scanResult.getEndTime()) );
     }
 }
