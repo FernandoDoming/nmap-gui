@@ -6,7 +6,9 @@ import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private ScansListAdapter adapter = null;
 
     private ProgressBar scanProgress;
+    private CoordinatorLayout coordinatorLayout;
     private ListView scanListView;
 
     private final Context context = this;
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         scanProgress = (ProgressBar) findViewById(R.id.scan_progress);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator);
         scanListView = (ListView) findViewById(R.id.scans_list);
         setSupportActionBar(toolbar);
 
@@ -182,12 +186,17 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         newScan = configureScanFromDialog(dialog, newScan);
+                        showRunAlert(getResources().getString(R.string.run_alert));
                         newScan.run(context);
                         scanProgress.setIndeterminate(true);
                     }
                 })
                 .cancelable(false)
                 .show();
+    }
+
+    private void showRunAlert(String msg) {
+        Snackbar.make(coordinatorLayout, msg, Snackbar.LENGTH_LONG).show();
     }
 
     private Scan configureScanFromDialog(MaterialDialog dialog, Scan scan) {
@@ -295,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
                         ScanResult toDelete = adapter.getItem(selected.keyAt(i));
                         adapter.delete(toDelete);
                     }
+                    showUndoDelete();
                     mode.finish();
                     return true;
 
@@ -310,6 +320,20 @@ public class MainActivity extends AppCompatActivity {
             }
             adapter.removeSelection();
             actionMode = null;
+        }
+
+        private void showUndoDelete() {
+            Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, "Message is deleted", Snackbar.LENGTH_LONG)
+                    .setAction("UNDO", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Snackbar snackbar1 = Snackbar.make(coordinatorLayout, "Feature not implemented, sorry :(", Snackbar.LENGTH_SHORT);
+                            snackbar1.show();
+                        }
+                    });
+
+            snackbar.show();
         }
     }
 }

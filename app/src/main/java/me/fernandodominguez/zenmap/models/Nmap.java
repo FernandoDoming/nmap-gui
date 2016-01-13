@@ -5,7 +5,9 @@ import android.content.Context;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
+import eu.chainfire.libsuperuser.Shell;
 import me.fernandodominguez.zenmap.R;
 
 /**
@@ -43,15 +45,28 @@ public class Nmap {
         return execute( context.getResources().getString(R.string.host_discovery_opts), target );
     }
 
+    public String osScan(String target) throws IOException, InterruptedException {
+        return executeAsRoot(context.getResources().getString(R.string.os_scan_opts), target);
+    }
+
     private String execute(String options, String target) throws IOException, InterruptedException {
         String xml = context.getResources().getString(R.string.xml_opt);
-        Process nmap = Runtime.getRuntime().exec(binary + " " + options + " " + xml + " " + target);
-        nmap.waitFor();
-        BufferedReader in = new BufferedReader(new InputStreamReader(nmap.getInputStream()));
-        String output = "";
+        List<String> lines = Shell.SH.run(binary + " " + options + " " + xml + " " + target);
 
-        String line   = null;
-        while ((line = in.readLine()) != null) {
+        String output = "";
+        for (String line : lines) {
+            output += "\n" + line;
+        }
+
+        return output.trim();
+    }
+
+    private String executeAsRoot(String options, String target) throws IOException, InterruptedException {
+        String xml = context.getResources().getString(R.string.xml_opt);
+        List<String> lines = Shell.SU.run(binary + " " + options + " " + xml + " " + target);
+
+        String output = "";
+        for (String line : lines) {
             output += "\n" + line;
         }
 

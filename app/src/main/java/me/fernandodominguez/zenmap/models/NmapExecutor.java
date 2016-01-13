@@ -50,6 +50,8 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
                 output = nmap.hostDiscovery(scan.getTarget());
             } else if (scan.getIntensity().equals(ScanTypes.REGULAR_SCAN)) {
                 output = nmap.regularScan(scan.getTarget());
+            } else if (scan.getIntensity().equals(ScanTypes.OS_SCAN)) {
+                output = nmap.osScan(scan.getTarget());
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

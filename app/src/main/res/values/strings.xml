@@ -34,11 +34,13 @@
     <string name="host_scan_title">Host scan</string>
     <string-array name="host_scan_types">
         <item>@string/regular_scan</item>
+        <item>@string/os_scan</item>
         <item>@string/intense_scan</item>
         <item>@string/intense_scan_all_tcp_ports</item>
     </string-array>
 
     <string name="regular_scan">Regular scan</string>
+    <string name="os_scan">Operative System scan</string>
     <string name="intense_scan">Intense scan</string>
     <string name="intense_scan_all_tcp_ports">Intense scan, all TCP ports</string>
 
@@ -55,14 +57,15 @@
     <string name="host_scan">Host scan</string>
 
     <!-- Scan options -->
+    <!-- Host scan options -->
     <string name="version_opts">--version</string>
     <string name="regular_scan_opts">-v</string>
+    <string name="os_scan_opts">-v -O</string>
     <string name="intense_scan_opts">-A -T4 -v</string>
     <string name="intense_scan_all_tcp_opts">-p 1-65535 -A -T4 -v</string>
+    <!-- Network scan options -->
     <string name="host_discovery_opts">-sP -v --reason</string>
     <string name="xml_opt">-oX -</string>
-
-
 
 
     <string name="title_activity_scan_detail">ScanDetailActivity</string>
@@ -73,5 +76,6 @@
     <string name="elapsed_time_title">Elapsed time</string>
     <string name="menu_delete">Delete</string>
     <string name="scan_name">Name</string>
+    <string name="run_alert">Scan is running</string>
 
 </resources>
