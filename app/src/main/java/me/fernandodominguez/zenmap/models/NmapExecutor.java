@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.activities.MainActivity;
+import me.fernandodominguez.zenmap.activities.ScanDetailActivity;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.parsers.HostScanParser;
 import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
@@ -62,6 +63,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
             if (scanResult != null) {
                 scanResult.setName(scan.getName());
                 scanResult.setOutput(output);
+                scanResult.setScan(scan);
                 scanResult.saveWithChildren();
             }
 
@@ -90,36 +92,15 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
 
     @Override
     protected void onPostExecute(ScanResult result) {
-        ((MainActivity) context).getAdapter().addScan(result);
-        ProgressBar scanProgress = (ProgressBar) ((Activity) context).findViewById(R.id.scan_progress);
-        scanProgress.setIndeterminate(false);
-    }
 
-    /* XML Parsing */
-
-    private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser.getEventType() != XmlPullParser.START_TAG) {
-            throw new IllegalStateException();
+        if (context instanceof  MainActivity) {
+            ((MainActivity) context).getAdapter().addScan(result);
+            ProgressBar scanProgress = (ProgressBar) ((Activity) context).findViewById(R.id.scan_progress);
+            scanProgress.setIndeterminate(false);
+        } else if (context instanceof ScanDetailActivity) {
+            Activity activity = (Activity) context;
+            activity.finish();
+            activity.startActivity(activity.getIntent());
         }
-        int depth = 1;
-        while (depth != 0) {
-            switch (parser.next()) {
-                case XmlPullParser.END_TAG:
-                    depth--;
-                    break;
-                case XmlPullParser.START_TAG:
-                    depth++;
-                    break;
-            }
-        }
-    }
-
-    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String result = "";
-        if (parser.next() == XmlPullParser.TEXT) {
-            result = parser.getText();
-            parser.nextTag();
-        }
-        return result;
     }
 }

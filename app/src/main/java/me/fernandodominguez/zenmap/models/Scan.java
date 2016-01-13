@@ -2,10 +2,12 @@ package me.fernandodominguez.zenmap.models;
 
 import android.content.Context;
 
+import java.io.Serializable;
+
 /**
  * Created by fernando on 28/12/15.
  */
-public class Scan {
+public class Scan implements Serializable {
 
     private String name;
     private int type;
