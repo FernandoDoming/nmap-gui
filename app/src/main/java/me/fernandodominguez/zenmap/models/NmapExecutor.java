@@ -3,6 +3,7 @@ package me.fernandodominguez.zenmap.models;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Xml;
 import android.widget.ProgressBar;
 
@@ -11,6 +12,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.activities.MainActivity;
@@ -40,25 +43,15 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
     protected ScanResult doInBackground(Scan... params) {
         scan = params[0];
         String output = null;
-
-        try {
-            if (scan.getIntensity().equals(ScanTypes.INTENSE_SCAN)) {
-                output = nmap.intenseScan(scan.getTarget());
-            } else if (scan.getIntensity().equals(ScanTypes.INTENSE_SCAN_ALL_TCP_PORTS)) {
-                output = nmap.intenseScanAllTcpPorts(scan.getTarget());
-            } else if (scan.getIntensity().equals(ScanTypes.HOST_DISCOVERY)) {
-                output = nmap.hostDiscovery(scan.getTarget());
-            } else if (scan.getIntensity().equals(ScanTypes.REGULAR_SCAN)) {
-                output = nmap.regularScan(scan.getTarget());
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Parse the result into POJOs
-        XmlPullParser parser = Xml.newPullParser();
         ScanResult scanResult = null;
+
         try {
+            Method method = nmap.getClass().getMethod(scan.getIntensity(), String.class);
+            output = (String) method.invoke(nmap, scan.getTarget());
+
+            // Parse the result into POJOs
+            XmlPullParser parser = Xml.newPullParser();
+
             parser.setInput(new StringReader(output));
             if (scan.getType() == ScanTypes.HOST_SCAN) {
                 scanResult = new HostScanParser().parse(parser);
@@ -71,9 +64,22 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
                 scanResult.setOutput(output);
                 scanResult.saveWithChildren();
             }
+
+        } catch (NoSuchMethodException | SecurityException e) {
+            Log.e(this.getClass().getName(), scan.getIntensity() + " is not supported");
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            Log.e(this.getClass().getName(), "Invocation for " + scan.getIntensity()
+                                            + " in " + nmap + " failed");
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            Log.e(this.getClass().getName(), "Illegal access made: " + scan.getIntensity()
+                    + " in " + nmap );
+            e.printStackTrace();
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
         }
+
         return scanResult;
     }
 
