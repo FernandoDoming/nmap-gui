@@ -15,7 +15,7 @@ import android.view.animation.AnimationUtils;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.SectionsPagerAdapter;
-import me.fernandodominguez.zenmap.models.ScanResult;
+import me.fernandodominguez.zenmap.models.Scan;
 
 public class ScanDetailActivity extends AppCompatActivity {
 
@@ -37,22 +37,22 @@ public class ScanDetailActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
 
-    private ScanResult scanResult;
+    private Scan scan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_detail);
 
-        scanResult = (ScanResult) getIntent().getSerializableExtra("scan");
+        scan = (Scan) getIntent().getSerializableExtra("scan");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setTitle(scanResult.getTitle());
+        toolbar.setTitle(scan.getScanResult().getTitle());
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), scanResult);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), scan.getScanResult());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -65,7 +65,7 @@ public class ScanDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scanResult.getScan().run(context);
+                scan.getScanResult().getScan().run(context);
                 startRefreshingAnimation();
             }
         });

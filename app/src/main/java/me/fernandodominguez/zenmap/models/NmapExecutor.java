@@ -25,7 +25,7 @@ import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
 /**
  * Created by fernando on 29/12/15.
  */
-public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
+public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
 
     private Context context;
     private Nmap nmap;
@@ -41,7 +41,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
     }
 
     @Override
-    protected ScanResult doInBackground(Scan... params) {
+    protected Scan doInBackground(Scan... params) {
         scan = params[0];
         String output = null;
         ScanResult scanResult = null;
@@ -64,7 +64,8 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
                 scanResult.setName(scan.getName());
                 scanResult.setOutput(output);
                 scanResult.setScan(scan);
-                scanResult.saveWithChildren();
+                scan.setScanResult(scanResult);
+                scan.saveWithChildren();
             }
 
         } catch (NoSuchMethodException | SecurityException e) {
@@ -82,7 +83,8 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
             e.printStackTrace();
         }
 
-        return scanResult;
+        scan.setScanResult(scanResult);
+        return scan;
     }
 
     @Override
@@ -91,10 +93,10 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
     }
 
     @Override
-    protected void onPostExecute(ScanResult result) {
+    protected void onPostExecute(Scan scan) {
 
         if (context instanceof  MainActivity) {
-            ((MainActivity) context).getAdapter().addScan(result);
+            ((MainActivity) context).getAdapter().addScan(scan);
             ProgressBar scanProgress = (ProgressBar) ((Activity) context).findViewById(R.id.scan_progress);
             scanProgress.setIndeterminate(false);
         } else if (context instanceof ScanDetailActivity) {

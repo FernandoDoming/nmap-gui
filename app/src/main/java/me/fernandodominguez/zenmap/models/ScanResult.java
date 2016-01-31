@@ -33,6 +33,8 @@ public abstract class ScanResult extends Model implements IScanResult, Serializa
     @Column(name = "Output")
     protected String output;
 
+    // belongs to a Scan
+    @Column(name = "Scan")
     protected Scan scan;
 
     /* Constructors */

@@ -40,16 +40,13 @@ import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.helpers.FileHelper;
 import me.fernandodominguez.zenmap.helpers.ScanHelper;
 import me.fernandodominguez.zenmap.models.Scan;
-import me.fernandodominguez.zenmap.models.ScanResult;
-import me.fernandodominguez.zenmap.models.host.HostScan;
-import me.fernandodominguez.zenmap.models.network.NetworkScan;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String NMAP_BINARY_FILE = "nmap";
 
     private Scan newScan = null;
-    private List<ScanResult> scans = new ArrayList<>();
+    private List<Scan> scans = new ArrayList<>();
     private ScansListAdapter adapter = null;
 
     private ProgressBar scanProgress;
@@ -67,10 +64,7 @@ public class MainActivity extends AppCompatActivity {
         scanListView = (ListView) findViewById(R.id.scans_list);
         setSupportActionBar(toolbar);
 
-        List<HostScan> hostScans = HostScan.all();
-        List<NetworkScan> networkScans = NetworkScan.all();
-        scans.addAll(hostScans);
-        scans.addAll(networkScans);
+        scans = Scan.all();
 
         adapter = new ScansListAdapter(this, scans);
         scanListView.setAdapter(adapter);
@@ -304,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.menu_delete:
                     SparseBooleanArray selected = adapter.getSelectedIds();
                     for (int i = (selected.size() - 1); i >= 0; i--) {
-                        ScanResult toDelete = adapter.getItem(selected.keyAt(i));
+                        Scan toDelete = adapter.getItem(selected.keyAt(i));
                         adapter.delete(toDelete);
                     }
                     mode.finish();
