@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.fernandodominguez.zenmap.models.host.HostScan;
-import me.fernandodominguez.zenmap.models.host.Port;
-import me.fernandodominguez.zenmap.models.host.PortStatus;
+import me.fernandodominguez.zenmap.models.host.Service;
+import me.fernandodominguez.zenmap.models.host.ServiceStatus;
 
 /**
  * Created by fernando on 30/12/15.
@@ -20,7 +20,7 @@ public class HostScanParser {
 
     public HostScan parse(XmlPullParser parser) throws IOException, XmlPullParserException {
         HostScan hostScan = new HostScan();
-        List<Port> ports = new ArrayList<>();
+        List<Service> services = new ArrayList<>();
         String hostname  = null;
         String address   = null;
 
@@ -31,8 +31,8 @@ public class HostScanParser {
             String name = parser.getName();
             if (name.equals("address")) {
                 address = readAddress(parser);
-            } else if (name.equals("ports")) {
-                ports = readPorts(parser);
+            } else if (name.equals("services")) {
+                services = readPorts(parser);
             } else if (name.equals("hostname")) {
                 hostname = readHostname(parser);
             } else if (name.equals("finished")) {
@@ -42,15 +42,15 @@ public class HostScanParser {
                 hostScan.setStartTime( Long.parseLong(parser.getAttributeValue(null, "start")) );
             }
         }
-        hostScan.setPorts(ports);
+        hostScan.setServices(services);
         hostScan.setHostname(hostname);
         hostScan.setAddress(address);
         return hostScan;
     }
 
-    private List<Port> readPorts(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "ports");
-        List<Port> ports = new ArrayList<>();
+    private List<Service> readPorts(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "services");
+        List<Service> services = new ArrayList<>();
 
         int depth = parser.getDepth();
         while (!(parser.next() == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
@@ -58,20 +58,21 @@ public class HostScanParser {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("port")) {
-                ports.add(readPort(parser));
+            if (name.equals("service")) {
+                services.add(readPort(parser));
             }
         }
-        return ports;
+        return services;
     }
 
-    private Port readPort(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "port");
+    private Service readPort(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "service");
 
-        PortStatus status = null;
+        ServiceStatus status = null;
         String protocol = null;
         String port = null;
         String service = null;
+        String version = null;
 
         protocol = parser.getAttributeValue(null, "protocol");
         port     = parser.getAttributeValue(null, "portid");
@@ -86,9 +87,12 @@ public class HostScanParser {
                 status = readStatus(parser);
             } else if (name.equals("service")) {
                 service = readService(parser);
+                version = readVersion(parser);
             }
         }
-        return new Port(protocol, port, service, status);
+        Service srvc = new Service(protocol, port, service, status);
+        if(version != null) srvc.setVersion(version);
+        return srvc;
     }
 
     private String readHostname(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -101,11 +105,19 @@ public class HostScanParser {
         return parser.getAttributeValue(null, "name");
     }
 
-    private PortStatus readStatus(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private String readVersion(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "service");
+        String product = parser.getAttributeValue(null, "product");
+        String version = parser.getAttributeValue(null, "version");
+        String extra = parser.getAttributeValue(null, "extrainfo");
+        return product + " " + version + " " + extra;
+    }
+
+    private ServiceStatus readStatus(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "state");
         String state = parser.getAttributeValue(null, "state");
         String reason = parser.getAttributeValue(null, "reason");
-        return new PortStatus(state, reason);
+        return new ServiceStatus(state, reason);
     }
 
     private String readAddress(XmlPullParser parser) throws IOException, XmlPullParserException {

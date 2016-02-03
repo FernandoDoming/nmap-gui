@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.fernandodominguez.zenmap.R;
-import me.fernandodominguez.zenmap.models.host.Port;
+import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
 
 /**
@@ -58,10 +58,10 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
             title.setText(host.getAddress());
             subtitle.setText(host.getStatus().getState());
             icon.setImageResource(R.drawable.desktop);
-        } else if (result instanceof Port) {
-            Port port = (Port) result;
-            title.setText(port.getPort());
-            subtitle.setText(port.getStatus().getState());
+        } else if (result instanceof Service) {
+            Service service = (Service) result;
+            title.setText(service.getPort());
+            subtitle.setText(service.getStatus().getState());
             icon.setImageResource(R.drawable.service);
         }
 

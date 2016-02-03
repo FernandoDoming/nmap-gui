@@ -13,7 +13,7 @@ import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
 import me.fernandodominguez.zenmap.helpers.DateHelper;
 import me.fernandodominguez.zenmap.models.ScanResult;
 import me.fernandodominguez.zenmap.models.host.HostScan;
-import me.fernandodominguez.zenmap.models.host.Port;
+import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
 import me.fernandodominguez.zenmap.models.network.NetworkScan;
 
@@ -66,7 +66,7 @@ public class PlaceholderFragment extends Fragment {
                     resultsListView.setAdapter(adapter);
                 } else if (scanResult instanceof HostScan) {
                     HostScan hostScan = (HostScan) scanResult;
-                    GeneralResultsListAdapter<Port> adapter = new GeneralResultsListAdapter<>(getActivity(), hostScan.getPorts());
+                    GeneralResultsListAdapter<Service> adapter = new GeneralResultsListAdapter<>(getActivity(), hostScan.getServices());
                     resultsListView.setAdapter(adapter);
                 }
 
