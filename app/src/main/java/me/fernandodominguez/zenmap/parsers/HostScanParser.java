@@ -110,7 +110,12 @@ public class HostScanParser {
         String product = parser.getAttributeValue(null, "product");
         String version = parser.getAttributeValue(null, "version");
         String extra = parser.getAttributeValue(null, "extrainfo");
-        return product + " " + version + " " + extra;
+        String v = "";
+        if (product != null) v = v + product;
+        if (version != null) v = v + version;
+        if (extra != null) v = v + extra;
+        if (v.equals("")) v = "Unknown";
+        return v;
     }
 
     private ServiceStatus readStatus(XmlPullParser parser) throws IOException, XmlPullParserException {
