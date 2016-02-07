@@ -31,7 +31,7 @@ public class HostScanParser {
             String name = parser.getName();
             if (name.equals("address")) {
                 address = readAddress(parser);
-            } else if (name.equals("services")) {
+            } else if (name.equals("ports")) {
                 services = readPorts(parser);
             } else if (name.equals("hostname")) {
                 hostname = readHostname(parser);
@@ -49,7 +49,7 @@ public class HostScanParser {
     }
 
     private List<Service> readPorts(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "services");
+        parser.require(XmlPullParser.START_TAG, ns, "ports");
         List<Service> services = new ArrayList<>();
 
         int depth = parser.getDepth();
@@ -58,7 +58,7 @@ public class HostScanParser {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("service")) {
+            if (name.equals("port")) {
                 services.add(readPort(parser));
             }
         }
@@ -66,7 +66,7 @@ public class HostScanParser {
     }
 
     private Service readPort(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "service");
+        parser.require(XmlPullParser.START_TAG, ns, "port");
 
         ServiceStatus status = null;
         String protocol = null;
