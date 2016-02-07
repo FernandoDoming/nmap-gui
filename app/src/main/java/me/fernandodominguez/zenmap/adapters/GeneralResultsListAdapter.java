@@ -50,6 +50,7 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
 
         TextView title = (TextView) rowView.findViewById(R.id.general_row_title);
         TextView subtitle = (TextView) rowView.findViewById(R.id.general_row_subtitle);
+        TextView extra = (TextView) rowView.findViewById(R.id.general_row_extra);
         ImageView icon = (ImageView) rowView.findViewById(R.id.general_row_icon);
 
         T result = elements.get(position);
@@ -60,8 +61,11 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
             icon.setImageResource(R.drawable.desktop);
         } else if (result instanceof Service) {
             Service service = (Service) result;
-            title.setText(service.getPort());
-            subtitle.setText(service.getStatus().getState());
+            title.setText(
+                    context.getString(R.string.service_title, service.getService(), service.getPort())
+            );
+            subtitle.setText(context.getString(R.string.service_subtitle, service.getStatus().getState()));
+            extra.setText(service.getVersion());
             icon.setImageResource(R.drawable.service);
         }
 

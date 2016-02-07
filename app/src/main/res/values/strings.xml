@@ -54,7 +54,13 @@
     <string name="net_scan">Network scan</string>
     <string name="host_scan">Host scan</string>
 
+    <!-- Scan details -->
+
+    <string name="service_title">%1$s - %2$s</string>
+    <string name="service_subtitle">Service is %1$s</string>
+
     <!-- Scan options -->
+
     <string name="version_opts">--version</string>
     <string name="regular_scan_opts">-v -sV</string>
     <string name="intense_scan_opts">-A -T4 -v</string>
@@ -64,6 +70,7 @@
 
     <string name="xml_opt">-oX -</string>
 
+    <!-- Misc -->
 
     <string name="title_activity_scan_detail">ScanDetailActivity</string>
     <string name="target_title">Target</string>

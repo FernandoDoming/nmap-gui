@@ -27,6 +27,13 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/general_row_title"/>
 
+        <TextView
+            android:id="@+id/general_row_extra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/general_row_title"/>
+
     </RelativeLayout>
 
 </LinearLayout>
