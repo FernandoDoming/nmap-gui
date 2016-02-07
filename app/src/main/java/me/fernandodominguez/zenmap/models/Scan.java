@@ -43,8 +43,8 @@ public class Scan extends Model implements Serializable {
 
     /* Public methods */
 
-    public void run(Context context) {
-        new NmapExecutor(context).execute(this);
+    public void run(Context context, String binary) {
+        new NmapExecutor(context, binary).execute(this);
     }
 
     public static List<Scan> all() {

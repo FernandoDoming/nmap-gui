@@ -1,7 +1,9 @@
 package me.fernandodominguez.zenmap.activities;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -33,11 +35,13 @@ public class ScanDetailActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private SharedPreferences sharedPrefs;
     private Context context = this;
 
     private FloatingActionButton fab;
 
     private Scan scan;
+    private String NMAP_BINARY_FILE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +65,16 @@ public class ScanDetailActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        NMAP_BINARY_FILE
+                = sharedPrefs.getString(getString(R.string.nmap_binary_path),
+                                        getFilesDir().getParent() + "/bin/nmap");
+
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scan.getScanResult().getScan().run(context);
+                scan.getScanResult().getScan().run(context, NMAP_BINARY_FILE);
                 startRefreshingAnimation();
             }
         });

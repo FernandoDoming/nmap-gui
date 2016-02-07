@@ -18,9 +18,9 @@ public class Nmap {
 
     private String target;
 
-    public Nmap(Context context) {
+    public Nmap(Context context, String binary) {
         this.context = context;
-        this.binary  = context.getFilesDir() + "/bin/nmap";
+        this.binary  = binary;
     }
 
     public String version() throws IOException, InterruptedException {

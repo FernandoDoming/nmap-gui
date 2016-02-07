@@ -34,7 +34,7 @@ public abstract class ScanResult extends Model implements IScanResult, Serializa
     protected String output;
 
     // belongs to a Scan
-    @Column(name = "Scan")
+    @Column(name = "Scan", onDelete = Column.ForeignKeyAction.CASCADE)
     protected Scan scan;
 
     /* Constructors */

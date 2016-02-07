@@ -31,9 +31,9 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
     private Nmap nmap;
     private Scan scan;
 
-    public NmapExecutor(Context context) {
+    public NmapExecutor(Context context, String binary) {
         this.context = context;
-        this.nmap = new Nmap(context);
+        this.nmap = new Nmap(context, binary);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
     @Override
     protected void onPostExecute(Scan scan) {
 
-        if (context instanceof  MainActivity) {
+        if (context instanceof MainActivity) {
             ((MainActivity) context).getAdapter().addScan(scan);
             ProgressBar scanProgress = (ProgressBar) ((Activity) context).findViewById(R.id.scan_progress);
             scanProgress.setIndeterminate(false);
