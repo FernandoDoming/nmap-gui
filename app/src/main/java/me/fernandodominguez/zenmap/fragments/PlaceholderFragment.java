@@ -29,7 +29,7 @@ public class PlaceholderFragment extends Fragment {
     private final static String ARG_SCAN_RESULT    = "scan";
 
     private final static int GENERAL_SECTION_NUMBER = 1;
-    private final static int _SECTION_NUMBER = 2;
+    private final static int NETWORK_MAP_SECTION_NUMBER = 2;
     private final static int RAW_SECTION_NUMBER = 3;
 
     public PlaceholderFragment() {
@@ -73,6 +73,10 @@ public class PlaceholderFragment extends Fragment {
                 View header = inflater.inflate(R.layout.scan_general_properties, container, false);
                 fillHeader(header, scanResult);
                 resultsListView.addHeaderView(header);
+                break;
+
+            case NETWORK_MAP_SECTION_NUMBER:
+                rootView = inflater.inflate(R.layout.scan_network_map_layout, container, false);
                 break;
 
             case RAW_SECTION_NUMBER:

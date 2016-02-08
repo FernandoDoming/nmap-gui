@@ -14,7 +14,7 @@ import me.fernandodominguez.zenmap.models.ScanResult;
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     private final String SECTION_1_TITLE = "General";
-    private final String SECTION_2_TITLE = "";
+    private final String SECTION_2_TITLE = "Network";
     private final String SECTION_3_TITLE = "RAW";
     private final int    NUM_PAGES       = 3;
 
