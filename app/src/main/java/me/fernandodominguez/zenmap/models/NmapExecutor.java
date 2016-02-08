@@ -3,6 +3,7 @@ package me.fernandodominguez.zenmap.models;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.PowerManager;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.ProgressBar;
@@ -28,6 +29,8 @@ import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
 public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
 
     private Context context;
+    public PowerManager.WakeLock mWakeLock;
+
     private Nmap nmap;
     private Scan scan;
 
@@ -38,6 +41,11 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
 
     @Override
     protected void onPreExecute() {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                getClass().getName());
+        Log.d(this.getClass().getName(), "Acquiring wakelock");
+        mWakeLock.acquire();
     }
 
     @Override
@@ -45,6 +53,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
         scan = params[0];
         String output = null;
         ScanResult scanResult = null;
+        Log.i(this.getClass().getName(), "Starting scan for " + scan.getTarget());
 
         try {
             Method method = nmap.getClass().getMethod(scan.getIntensity(), String.class);
@@ -104,5 +113,8 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
             activity.finish();
             activity.startActivity(activity.getIntent());
         }
+        Log.i(this.getClass().getName(), "Scan finished for " + scan.getTarget());
+        mWakeLock.release();
+        Log.d(this.getClass().getName(), "Wakelock released");
     }
 }
