@@ -58,8 +58,12 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
         if (result instanceof Host) {
             Host host = (Host) result;
             title.setText(host.getAddress());
-            subtitle.setText(host.getStatus().getState());
+            subtitle.setText(
+                    context.getString(R.string.host_subtitle, host.getStatus().getState())
+            );
+            extra.setText( StringHelper.truncate(host.getStatus().getReason(), 20) );
             icon.setImageResource(R.drawable.desktop);
+
         } else if (result instanceof Service) {
             Service service = (Service) result;
             title.setText(

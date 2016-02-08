@@ -59,6 +59,8 @@
     <string name="service_title">%1$s - %2$s</string>
     <string name="service_subtitle">Service is %1$s</string>
 
+    <string name="host_subtitle">Host is %1$s</string>
+
     <!-- Scan options -->
 
     <string name="version_opts">--version</string>
