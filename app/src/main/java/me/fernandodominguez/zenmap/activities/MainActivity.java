@@ -36,6 +36,7 @@ import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.ScansListAdapter;
 import me.fernandodominguez.zenmap.async.SimpleHttpTask;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
+import me.fernandodominguez.zenmap.helpers.NetworkHelper;
 import me.fernandodominguez.zenmap.helpers.ScanHelper;
 import me.fernandodominguez.zenmap.models.Scan;
 
@@ -191,15 +192,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void newHostScan() {
-        newBaseScan(R.string.host_scan_title, R.layout.new_host_scan_dialog);
+        MaterialDialog dialog = newBaseScan(R.string.host_scan_title, R.layout.new_host_scan_dialog);
+        dialog.show();
     }
 
     private void newNetworkScan() {
-        newBaseScan(R.string.network_scan_title, R.layout.new_network_scan_dialog);
+        MaterialDialog dialog = newBaseScan(R.string.network_scan_title, R.layout.new_network_scan_dialog);
+        View view = dialog.getCustomView();
+        EditText target = (EditText) view.findViewById(R.id.input_target);
+        target.setText(NetworkHelper.getNetworkAddress());
+        //target.setFocusable(false);
+        dialog.show();
     }
 
-    private void newBaseScan(int titleRes, int layoutRes) {
-        new MaterialDialog.Builder(this)
+    private MaterialDialog newBaseScan(int titleRes, int layoutRes) {
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title(titleRes)
                 .customView(layoutRes , true)
                 .positiveText(R.string.done)
@@ -220,7 +227,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .cancelable(false)
-                .show();
+                .build();
+
+        return dialog;
     }
 
     private Scan configureScanFromDialog(MaterialDialog dialog, Scan scan) {
