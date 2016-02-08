@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.fernandodominguez.zenmap.R;
+import me.fernandodominguez.zenmap.helpers.StringHelper;
 import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
 
@@ -65,7 +66,7 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
                     context.getString(R.string.service_title, service.getService(), service.getPort())
             );
             subtitle.setText(context.getString(R.string.service_subtitle, service.getStatus().getState()));
-            extra.setText(service.getVersion());
+            extra.setText(StringHelper.truncate(service.getVersion(), 20));
             icon.setImageResource(R.drawable.service);
         }
 

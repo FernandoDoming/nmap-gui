@@ -114,7 +114,7 @@ public class HostScanParser {
         if (product != null) v = v + product;
         if (version != null) v = v + version;
         if (extra != null) v = v + extra;
-        if (v.equals("")) v = "Unknown";
+        if (v.equals("")) v = "Version unknown";
         return v;
     }
 
