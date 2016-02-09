@@ -37,7 +37,8 @@ public class HostScanParser {
                 hostname = readHostname(parser);
             } else if (name.equals("finished")) {
                 hostScan.setEndTime( Long.parseLong(parser.getAttributeValue(null, "time")) );
-                hostScan.setElapsed( Float.parseFloat(parser.getAttributeValue(null, "elapsed")) );
+                hostScan.setElapsed(Float.parseFloat(parser.getAttributeValue(null, "elapsed")));
+                hostScan.setSummary( parser.getAttributeValue(null, "summary") );
             } else if (name.equals("nmaprun")) {
                 hostScan.setStartTime( Long.parseLong(parser.getAttributeValue(null, "start")) );
             }

@@ -33,6 +33,9 @@ public abstract class ScanResult extends Model implements IScanResult, Serializa
     @Column(name = "Output")
     protected String output;
 
+    @Column(name = "Summary")
+    protected String summary;
+
     // belongs to a Scan
     @Column(name = "Scan", onDelete = Column.ForeignKeyAction.CASCADE)
     protected Scan scan;
@@ -109,5 +112,13 @@ public abstract class ScanResult extends Model implements IScanResult, Serializa
 
     public void setScan(Scan scan) {
         this.scan = scan;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getSummary() {
+        return summary;
     }
 }

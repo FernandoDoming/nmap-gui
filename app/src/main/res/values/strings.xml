@@ -103,5 +103,6 @@
     <string name="info_binary_not_ok">Binary is erroneous.</string>
     <string name="dlg_progress_title_extraction">Extracting</string>
     <string name="nmap_binary_path">NMAP_BINARY_PATH</string>
+    <string name="summary_title">Summary</string>
 
 </resources>
