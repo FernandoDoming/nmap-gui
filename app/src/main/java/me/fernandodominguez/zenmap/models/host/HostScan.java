@@ -24,6 +24,9 @@ public class HostScan extends ScanResult {
     @Column(name = "Hostname")
     private String hostname;
 
+    @Column(name = "isUp")
+    private boolean up;
+
     public HostScan() {
         super();
     }
@@ -57,10 +60,14 @@ public class HostScan extends ScanResult {
 
     @Override
     public String getResult() {
-        if (getServices().size() == 1) {
-            return getServices().size() + " detected service open.";
+        if (isUp()) {
+            if (getServices().size() == 1) {
+                return getServices().size() + " detected service open.";
+            } else {
+                return getServices().size() + " detected services open.";
+            }
         } else {
-            return getServices().size() + " detected services open.";
+            return "Host is offline";
         }
     }
 
@@ -96,5 +103,13 @@ public class HostScan extends ScanResult {
             scan.getServices();
         }
         return scans;
+    }
+
+    public boolean isUp() {
+        return up;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
     }
 }

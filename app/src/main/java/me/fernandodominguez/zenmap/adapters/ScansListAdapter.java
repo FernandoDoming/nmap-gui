@@ -64,7 +64,12 @@ public class ScansListAdapter extends BaseAdapter {
         if (result instanceof NetworkScan) {
             imageView.setImageResource(R.drawable.network);
         } else if (result instanceof HostScan) {
-            imageView.setImageResource(R.drawable.network_server);
+            HostScan hostScan = (HostScan) result;
+            if (hostScan.isUp()) {
+                imageView.setImageResource(R.drawable.network_server);
+            } else {
+                imageView.setImageResource(R.drawable.offline_host);
+            }
         }
 
         return rowView;

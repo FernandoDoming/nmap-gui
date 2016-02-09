@@ -36,9 +36,11 @@ public class HostScanParser {
             } else if (name.equals("hostname")) {
                 hostname = readHostname(parser);
             } else if (name.equals("finished")) {
-                hostScan.setEndTime( Long.parseLong(parser.getAttributeValue(null, "time")) );
+                hostScan.setEndTime(Long.parseLong(parser.getAttributeValue(null, "time")));
                 hostScan.setElapsed(Float.parseFloat(parser.getAttributeValue(null, "elapsed")));
-                hostScan.setSummary( parser.getAttributeValue(null, "summary") );
+                hostScan.setSummary(parser.getAttributeValue(null, "summary"));
+            } else if (name.equals("hosts")) {
+                hostScan.setUp( Integer.parseInt(parser.getAttributeValue(null, "up")) > 0 );
             } else if (name.equals("nmaprun")) {
                 hostScan.setStartTime( Long.parseLong(parser.getAttributeValue(null, "start")) );
             }
