@@ -92,9 +92,11 @@ public class PlaceholderFragment extends Fragment {
         TextView target = (TextView) header.findViewById(R.id.target);
         TextView startTime = (TextView) header.findViewById(R.id.start_time);
         TextView endTime = (TextView) header.findViewById(R.id.end_time);
+        TextView elapsedTime = (TextView) header.findViewById(R.id.elapsed_time);
 
         target.setText(scanResult.getTarget());
         startTime.setText( DateHelper.getDate(scanResult.getStartTime()) );
         endTime.setText( DateHelper.getDate(scanResult.getEndTime()) );
+        elapsedTime.setText( scanResult.getElapsed() + " seconds" );
     }
 }
