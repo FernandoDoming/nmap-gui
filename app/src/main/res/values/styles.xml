@@ -17,6 +17,7 @@
         <item name="background">@color/colorPrimaryDark</item>
         <item name="android:height">?attr/actionBarSize</item>
         <item name="height">?attr/actionBarSize</item>
+        <item name="titleTextStyle">@style/TitleStyle</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -27,6 +28,10 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TitleStyle">
+        <item name="android:textSize">18sp</item>
+    </style>
 
     <style name="DialogEntry">
         <item name="android:textColor">@color/colorAccent</item>

@@ -1,18 +1,21 @@
 package me.fernandodominguez.zenmap.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -27,38 +30,35 @@ import android.widget.Spinner;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.ScansListAdapter;
+import me.fernandodominguez.zenmap.async.SimpleHttpTask;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
-import me.fernandodominguez.zenmap.helpers.FileHelper;
+import me.fernandodominguez.zenmap.helpers.NetworkHelper;
 import me.fernandodominguez.zenmap.helpers.ScanHelper;
 import me.fernandodominguez.zenmap.models.Scan;
-import me.fernandodominguez.zenmap.models.ScanResult;
-import me.fernandodominguez.zenmap.models.host.HostScan;
-import me.fernandodominguez.zenmap.models.network.NetworkScan;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String NMAP_BINARY_FILE = "nmap";
+    private String NMAP_BINARY_FILE;
+    public String NMAP_DOWNLOAD_URL;
 
     private Scan newScan = null;
-    private List<ScanResult> scans = new ArrayList<>();
+    private List<Scan> scans = new ArrayList<>();
     private ScansListAdapter adapter = null;
+    private SharedPreferences sharedPrefs;
 
     private ProgressBar scanProgress;
     private CoordinatorLayout coordinatorLayout;
     private ListView scanListView;
+    public ProgressDialog sharedProgressDialog;
 
     private final Context context = this;
+    private int currentEabi;
     private ActionMode actionMode;
 
     @Override
@@ -71,10 +71,7 @@ public class MainActivity extends AppCompatActivity {
         scanListView = (ListView) findViewById(R.id.scans_list);
         setSupportActionBar(toolbar);
 
-        List<HostScan> hostScans = HostScan.all();
-        List<NetworkScan> networkScans = NetworkScan.all();
-        scans.addAll(hostScans);
-        scans.addAll(networkScans);
+        scans = Scan.all();
 
         adapter = new ScansListAdapter(this, scans);
         scanListView.setAdapter(adapter);
@@ -89,10 +86,15 @@ public class MainActivity extends AppCompatActivity {
         scanListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                onListItemSelect(position);
+                onListItemSelect(position, view);
                 return true;
             }
         });
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        NMAP_BINARY_FILE = getFilesDir().getParent() + "/bin/nmap";
+        editor.putString(getString(R.string.nmap_binary_path), NMAP_BINARY_FILE);
+        editor.apply();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +104,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        sharedProgressDialog = new ProgressDialog(this);
+        sharedProgressDialog.setMessage(getString(R.string.dlg_progress_title_download));
+        sharedProgressDialog.setIndeterminate(true);
+        sharedProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        sharedProgressDialog.setCancelable(true);
+
         try {
             installNmap();
         } catch (Exception e) {
@@ -109,16 +117,42 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public ScansListAdapter getAdapter() {
+        return adapter;
+    }
+
+    public String doNextEabi() {
+        switch (currentEabi++) {
+            case 0:
+                return Build.CPU_ABI;
+            case 1:
+                return Build.CPU_ABI2;
+        }
+        return null;
+    }
+
     /* Private methods */
 
-    private void onListItemSelect(int position) {
+    private void onListItemSelect(int position, View view) {
         adapter.toggleSelection(position);
         boolean hasSelectedElements = adapter.getSelectedCount() > 0;
 
         if (hasSelectedElements && actionMode == null) {
+            // Has selected items but action mode is not initiated
             actionMode = startActionMode(new ActionModeCallback());
+            actionMode.setTitle(adapter.getSelectedCount() + " items selected");
         } else if (!hasSelectedElements && actionMode != null) {
+            // Action mode is initiated but there are no selected items
             actionMode.finish();
+        }  else if (hasSelectedElements && actionMode != null) {
+            // Has selected items and action mode is initiated
+            actionMode.setTitle(adapter.getSelectedCount() + " items selected");
+        }
+
+        if (adapter.getSelectedIds().get(position)) {
+            view.setBackgroundColor(ContextCompat.getColor(context, R.color.light_grey));
+        } else {
+            view.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
         }
     }
 
@@ -162,15 +196,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void newHostScan() {
-        newBaseScan(R.string.host_scan_title, R.layout.new_host_scan_dialog);
+        MaterialDialog dialog = newBaseScan(R.string.host_scan_title, R.layout.new_host_scan_dialog);
+        dialog.show();
     }
 
     private void newNetworkScan() {
-        newBaseScan(R.string.network_scan_title, R.layout.new_network_scan_dialog);
+        MaterialDialog dialog = newBaseScan(R.string.network_scan_title, R.layout.new_network_scan_dialog);
+        View view = dialog.getCustomView();
+        EditText target = (EditText) view.findViewById(R.id.input_target);
+        target.setText(NetworkHelper.getNetworkAddress());
+        //target.setFocusable(false);
+        dialog.show();
     }
 
-    private void newBaseScan(int titleRes, int layoutRes) {
-        new MaterialDialog.Builder(this)
+    private MaterialDialog newBaseScan(int titleRes, int layoutRes) {
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title(titleRes)
                 .customView(layoutRes , true)
                 .positiveText(R.string.done)
@@ -186,13 +226,17 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         newScan = configureScanFromDialog(dialog, newScan);
+
                         showRunAlert(getResources().getString(R.string.run_alert));
-                        newScan.run(context);
+                        newScan.run(context, NMAP_BINARY_FILE);
+
                         scanProgress.setIndeterminate(true);
                     }
                 })
                 .cancelable(false)
-                .show();
+                .build();
+
+        return dialog;
     }
 
     private void showRunAlert(String msg) {
@@ -214,40 +258,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void installNmap() throws Exception {
-
-        String dir = getFilesDir() + "/bin/";
-
-        AssetManager assetManager = getAssets();
-        String[] files = null;
-        files = assetManager.list("bin");
-        for (String file : files) {
-            if (!new File(dir + file).exists()) {
-                try {
-                    //FIXME directories not copying
-                    InputStream stream = this.getAssets().open("bin/" + file);
-                    new File(dir).mkdir();
-                    OutputStream output = new BufferedOutputStream(new FileOutputStream(dir + file));
-
-                    byte data[] = new byte[1024];
-                    int count;
-
-                    while ((count = stream.read(data)) != -1) {
-                        output.write(data, 0, count);
-                    }
-
-                    if (file.equals(NMAP_BINARY_FILE)) FileHelper.chmod(new File(dir + NMAP_BINARY_FILE), 0550);
-                    output.flush();
-                    output.close();
-                    stream.close();
-                } catch (IOException e) {
-                    Log.e("tag", "Failed to copy" + file, e);
-                }
-            }
+        if (!isBinaryHere(NMAP_BINARY_FILE)) {
+            askToDownload();
         }
     }
 
-    public ScansListAdapter getAdapter() {
-        return adapter;
+    private void askToDownload() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+                downloadAll();
+            }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(getString(R.string.dlg_ask2download))
+                .setPositiveButton(getString(R.string.dlg_ask2download_yes), dialogClickListener)
+                .setNegativeButton(getString(R.string.dlg_ask2download_no), dialogClickListener)
+                .show();
+    }
+
+    private void downloadAll () {
+        currentEabi = 0;
+        NMAP_DOWNLOAD_URL = getResources().getString(R.string.default_update_url);
+        final SimpleHttpTask versionTask = new SimpleHttpTask(this);
+        String versionurl = NMAP_DOWNLOAD_URL + "/nmap-latest.txt";
+        versionTask.execute(versionurl);
+
+        sharedProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                versionTask.cancel(true);
+            }
+        });
+    }
+
+
+    private boolean isBinaryHere(String binary) {
+        File binaryFile = new File(binary);
+        return binaryFile.canExecute();
     }
 
     /* Lifecycle methods */
@@ -292,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
+            return true;
         }
 
         @Override
@@ -301,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.menu_delete:
                     SparseBooleanArray selected = adapter.getSelectedIds();
                     for (int i = (selected.size() - 1); i >= 0; i--) {
-                        ScanResult toDelete = adapter.getItem(selected.keyAt(i));
+                        Scan toDelete = adapter.getItem(selected.keyAt(i));
                         adapter.delete(toDelete);
                     }
                     showUndoDelete();

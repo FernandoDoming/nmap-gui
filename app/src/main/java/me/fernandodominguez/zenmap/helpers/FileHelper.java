@@ -14,4 +14,21 @@ public class FileHelper {
                 fileUtils.getMethod("setPermissions", String.class, int.class, int.class, int.class);
         return (Integer) setPermissions.invoke(null, path.getAbsolutePath(), mode, -1, -1);
     }
+
+    static public void makedir (String dir) {
+        File myDir = new File(dir);
+
+        if(!myDir.isDirectory()) {
+            myDir.mkdirs();
+        }
+    }
+
+    static public void DeleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                DeleteRecursive(child);
+
+        fileOrDirectory.delete();
+    }
+
 }

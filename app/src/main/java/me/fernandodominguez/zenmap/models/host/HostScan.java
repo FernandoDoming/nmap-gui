@@ -16,7 +16,7 @@ import me.fernandodominguez.zenmap.models.ScanResult;
 public class HostScan extends ScanResult {
 
     @Column(name = "Ports")
-    private List<Port> ports;
+    private List<Service> services;
 
     @Column(name = "Address")
     private String address;
@@ -24,27 +24,30 @@ public class HostScan extends ScanResult {
     @Column(name = "Hostname")
     private String hostname;
 
+    @Column(name = "isUp")
+    private boolean up;
+
     public HostScan() {
         super();
     }
 
-    public HostScan(List<Port> ports, String address, String hostname) {
+    public HostScan(List<Service> services, String address, String hostname) {
         super();
-        this.ports = ports;
+        this.services = services;
         this.address = address;
         this.hostname = hostname;
     }
 
-    public List<Port> getPorts() {
-        if (ports == null) ports = getMany(Port.class, "HostScan");
-        for (Port port : ports) {
-            port.getStatus();
+    public List<Service> getServices() {
+        if (services == null) services = getMany(Service.class, "HostScan");
+        for (Service service : services) {
+            service.getStatus();
         }
-        return ports;
+        return services;
     }
 
-    public void setPorts(List<Port> ports) {
-        this.ports = ports;
+    public void setServices(List<Service> services) {
+        this.services = services;
     }
 
     public void setAddress(String address) {
@@ -57,24 +60,28 @@ public class HostScan extends ScanResult {
 
     @Override
     public String getResult() {
-        if (ports.size() == 1) {
-            return ports.size() + " detected port open.";
+        if (isUp()) {
+            if (getServices().size() == 1) {
+                return getServices().size() + " detected service open.";
+            } else {
+                return getServices().size() + " detected services open.";
+            }
         } else {
-            return ports.size() + " detected ports open.";
+            return "Host is offline";
         }
     }
 
     @Override
     public void saveWithChildren() {
         this.save();
-        if (this.ports != null) {
-            for (Port port : ports) {
-                port.hostScan = this;
-                port.save();
+        if (this.services != null) {
+            for (Service service : services) {
+                service.hostScan = this;
+                service.save();
 
-                PortStatus status = port.getStatus();
+                ServiceStatus status = service.getStatus();
                 if (status != null) {
-                    status.port = port;
+                    status.service = service;
                     status.save();
                 }
             }
@@ -93,8 +100,16 @@ public class HostScan extends ScanResult {
     public static List<HostScan> all() {
         List<HostScan> scans = new Select().all().from(HostScan.class).execute();
         for (HostScan scan : scans) {
-            scan.getPorts();
+            scan.getServices();
         }
         return scans;
+    }
+
+    public boolean isUp() {
+        return up;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
     }
 }

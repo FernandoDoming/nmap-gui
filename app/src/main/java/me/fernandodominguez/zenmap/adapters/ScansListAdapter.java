@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.fernandodominguez.zenmap.R;
+import me.fernandodominguez.zenmap.models.Scan;
 import me.fernandodominguez.zenmap.models.ScanResult;
 import me.fernandodominguez.zenmap.models.host.HostScan;
 import me.fernandodominguez.zenmap.models.network.NetworkScan;
@@ -22,10 +23,10 @@ import me.fernandodominguez.zenmap.models.network.NetworkScan;
 public class ScansListAdapter extends BaseAdapter {
 
     private Context context;
-    private List<ScanResult> scans;
+    private List<Scan> scans;
     private SparseBooleanArray selectedItemsIds;
 
-    public ScansListAdapter(Context context, List<ScanResult> scans) {
+    public ScansListAdapter(Context context, List<Scan> scans) {
         this.scans = scans;
         this.context = context;
         this.selectedItemsIds = new SparseBooleanArray();
@@ -37,7 +38,7 @@ public class ScansListAdapter extends BaseAdapter {
     }
 
     @Override
-    public ScanResult getItem(int position) {
+    public Scan getItem(int position) {
         return scans.get(position);
     }
 
@@ -56,20 +57,25 @@ public class ScansListAdapter extends BaseAdapter {
         TextView scanResult = (TextView) rowView.findViewById(R.id.scan_result);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
 
-        ScanResult result = scans.get(position);
+        ScanResult result = scans.get(position).getScanResult();
         scanTitle.setText(result.getTitle());
         scanResult.setText(result.getResult());
 
         if (result instanceof NetworkScan) {
             imageView.setImageResource(R.drawable.network);
         } else if (result instanceof HostScan) {
-            imageView.setImageResource(R.drawable.network_server);
+            HostScan hostScan = (HostScan) result;
+            if (hostScan.isUp()) {
+                imageView.setImageResource(R.drawable.network_server);
+            } else {
+                imageView.setImageResource(R.drawable.offline_host);
+            }
         }
 
         return rowView;
     }
 
-    public void addScan(ScanResult scanResult) {
+    public void addScan(Scan scanResult) {
         scans.add(scanResult);
         this.notifyDataSetChanged();
     }
@@ -88,7 +94,7 @@ public class ScansListAdapter extends BaseAdapter {
         } else {
             selectedItemsIds.delete(position);
         }
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     public void removeSelection() {
@@ -100,7 +106,7 @@ public class ScansListAdapter extends BaseAdapter {
         return selectedItemsIds;
     }
 
-    public void delete(ScanResult toDelete) {
+    public void delete(Scan toDelete) {
         // Delete database record
         toDelete.delete();
         // Delete from ListView

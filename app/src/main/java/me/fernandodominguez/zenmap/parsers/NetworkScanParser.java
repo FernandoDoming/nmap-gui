@@ -32,6 +32,7 @@ public class NetworkScanParser {
             } else if (name.equals("finished")) {
                 networkScan.setEndTime( Long.parseLong(parser.getAttributeValue(null, "time")) );
                 networkScan.setElapsed( Float.parseFloat(parser.getAttributeValue(null, "elapsed")) );
+                networkScan.setSummary( parser.getAttributeValue(null, "summary") );
             } else if (name.equals("nmaprun")) {
                 networkScan.setStartTime( Long.parseLong(parser.getAttributeValue(null, "start")) );
             }

@@ -3,6 +3,8 @@ package me.fernandodominguez.zenmap.models;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.PowerManager;
+import android.util.Log;
 import android.util.Xml;
 import android.widget.ProgressBar;
 
@@ -11,9 +13,12 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.activities.MainActivity;
+import me.fernandodominguez.zenmap.activities.ScanDetailActivity;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.parsers.HostScanParser;
 import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
@@ -21,46 +26,42 @@ import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
 /**
  * Created by fernando on 29/12/15.
  */
-public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
+public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
 
     private Context context;
+    public PowerManager.WakeLock mWakeLock;
+
     private Nmap nmap;
     private Scan scan;
 
-    public NmapExecutor(Context context) {
+    public NmapExecutor(Context context, String binary) {
         this.context = context;
-        this.nmap = new Nmap(context);
+        this.nmap = new Nmap(context, binary);
     }
 
     @Override
     protected void onPreExecute() {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                getClass().getName());
+        Log.d(this.getClass().getName(), "Acquiring wakelock");
+        mWakeLock.acquire();
     }
 
     @Override
-    protected ScanResult doInBackground(Scan... params) {
+    protected Scan doInBackground(Scan... params) {
         scan = params[0];
         String output = null;
-
-        try {
-            if (scan.getIntensity().equals(ScanTypes.INTENSE_SCAN)) {
-                output = nmap.intenseScan(scan.getTarget());
-            } else if (scan.getIntensity().equals(ScanTypes.INTENSE_SCAN_ALL_TCP_PORTS)) {
-                output = nmap.intenseScanAllTcpPorts(scan.getTarget());
-            } else if (scan.getIntensity().equals(ScanTypes.HOST_DISCOVERY)) {
-                output = nmap.hostDiscovery(scan.getTarget());
-            } else if (scan.getIntensity().equals(ScanTypes.REGULAR_SCAN)) {
-                output = nmap.regularScan(scan.getTarget());
-            } else if (scan.getIntensity().equals(ScanTypes.OS_SCAN)) {
-                output = nmap.osScan(scan.getTarget());
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Parse the result into POJOs
-        XmlPullParser parser = Xml.newPullParser();
         ScanResult scanResult = null;
+        Log.i(this.getClass().getName(), "Starting scan for " + scan.getTarget());
+
         try {
+            Method method = nmap.getClass().getMethod(scan.getIntensity(), String.class);
+            output = (String) method.invoke(nmap, scan.getTarget());
+
+            // Parse the result into POJOs
+            XmlPullParser parser = Xml.newPullParser();
+
             parser.setInput(new StringReader(output));
             if (scan.getType() == ScanTypes.HOST_SCAN) {
                 scanResult = new HostScanParser().parse(parser);
@@ -71,12 +72,28 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
             if (scanResult != null) {
                 scanResult.setName(scan.getName());
                 scanResult.setOutput(output);
-                scanResult.saveWithChildren();
+                scanResult.setScan(scan);
+                scan.setScanResult(scanResult);
+                scan.saveWithChildren();
             }
+
+        } catch (NoSuchMethodException | SecurityException e) {
+            Log.e(this.getClass().getName(), scan.getIntensity() + " is not supported");
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            Log.e(this.getClass().getName(), "Invocation for " + scan.getIntensity()
+                                            + " in " + nmap + " failed");
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            Log.e(this.getClass().getName(), "Illegal access made: " + scan.getIntensity()
+                    + " in " + nmap );
+            e.printStackTrace();
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
         }
-        return scanResult;
+
+        scan.setScanResult(scanResult);
+        return scan;
     }
 
     @Override
@@ -85,37 +102,19 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, ScanResult> {
     }
 
     @Override
-    protected void onPostExecute(ScanResult result) {
-        ((MainActivity) context).getAdapter().addScan(result);
-        ProgressBar scanProgress = (ProgressBar) ((Activity) context).findViewById(R.id.scan_progress);
-        scanProgress.setIndeterminate(false);
-    }
+    protected void onPostExecute(Scan scan) {
 
-    /* XML Parsing */
-
-    private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser.getEventType() != XmlPullParser.START_TAG) {
-            throw new IllegalStateException();
+        if (context instanceof MainActivity) {
+            ((MainActivity) context).getAdapter().addScan(scan);
+            ProgressBar scanProgress = (ProgressBar) ((Activity) context).findViewById(R.id.scan_progress);
+            scanProgress.setIndeterminate(false);
+        } else if (context instanceof ScanDetailActivity) {
+            Activity activity = (Activity) context;
+            activity.finish();
+            activity.startActivity(activity.getIntent());
         }
-        int depth = 1;
-        while (depth != 0) {
-            switch (parser.next()) {
-                case XmlPullParser.END_TAG:
-                    depth--;
-                    break;
-                case XmlPullParser.START_TAG:
-                    depth++;
-                    break;
-            }
-        }
-    }
-
-    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String result = "";
-        if (parser.next() == XmlPullParser.TEXT) {
-            result = parser.getText();
-            parser.nextTag();
-        }
-        return result;
+        Log.i(this.getClass().getName(), "Scan finished for " + scan.getTarget());
+        mWakeLock.release();
+        Log.d(this.getClass().getName(), "Wakelock released");
     }
 }

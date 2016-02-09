@@ -10,9 +10,10 @@ import android.widget.TextView;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
+import me.fernandodominguez.zenmap.helpers.DateHelper;
 import me.fernandodominguez.zenmap.models.ScanResult;
 import me.fernandodominguez.zenmap.models.host.HostScan;
-import me.fernandodominguez.zenmap.models.host.Port;
+import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
 import me.fernandodominguez.zenmap.models.network.NetworkScan;
 
@@ -28,7 +29,7 @@ public class PlaceholderFragment extends Fragment {
     private final static String ARG_SCAN_RESULT    = "scan";
 
     private final static int GENERAL_SECTION_NUMBER = 1;
-    private final static int _SECTION_NUMBER = 2;
+    private final static int NETWORK_MAP_SECTION_NUMBER = 2;
     private final static int RAW_SECTION_NUMBER = 3;
 
     public PlaceholderFragment() {
@@ -65,13 +66,17 @@ public class PlaceholderFragment extends Fragment {
                     resultsListView.setAdapter(adapter);
                 } else if (scanResult instanceof HostScan) {
                     HostScan hostScan = (HostScan) scanResult;
-                    GeneralResultsListAdapter<Port> adapter = new GeneralResultsListAdapter<>(getActivity(), hostScan.getPorts());
+                    GeneralResultsListAdapter<Service> adapter = new GeneralResultsListAdapter<>(getActivity(), hostScan.getServices());
                     resultsListView.setAdapter(adapter);
                 }
 
                 View header = inflater.inflate(R.layout.scan_general_properties, container, false);
                 fillHeader(header, scanResult);
                 resultsListView.addHeaderView(header);
+                break;
+
+            case NETWORK_MAP_SECTION_NUMBER:
+                rootView = inflater.inflate(R.layout.scan_network_map_layout, container, false);
                 break;
 
             case RAW_SECTION_NUMBER:
@@ -87,9 +92,13 @@ public class PlaceholderFragment extends Fragment {
         TextView target = (TextView) header.findViewById(R.id.target);
         TextView startTime = (TextView) header.findViewById(R.id.start_time);
         TextView endTime = (TextView) header.findViewById(R.id.end_time);
+        TextView elapsedTime = (TextView) header.findViewById(R.id.elapsed_time);
+        TextView summary = (TextView) header.findViewById(R.id.summary);
 
         target.setText(scanResult.getTarget());
-        startTime.setText( String.valueOf(scanResult.getStartTime()) );
-        endTime.setText( String.valueOf(scanResult.getEndTime()) );
+        startTime.setText( DateHelper.getDate(scanResult.getStartTime()) );
+        endTime.setText( DateHelper.getDate(scanResult.getEndTime()) );
+        elapsedTime.setText( scanResult.getElapsed() + " seconds" );
+        summary.setText( scanResult.getSummary() );
     }
 }
