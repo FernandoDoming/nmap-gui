@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         scanProgress = (ProgressBar) findViewById(R.id.scan_progress);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator);

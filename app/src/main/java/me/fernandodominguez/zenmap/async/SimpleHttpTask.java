@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
@@ -37,6 +38,21 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
     }
 
     @Override
+    protected void onPreExecute() {
+        // super.onPreExecute();
+        // take CPU lock to prevent CPU from going off if the user
+        // presses the power button during download
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                getClass().getName());
+        mWakeLock.acquire();
+        //outputView.append(getString(R.string.output_downloading_version_file));
+        if (context instanceof MainActivity) {
+            ((MainActivity) context).sharedProgressDialog.show();
+        }
+    }
+
+    @Override
     protected String doInBackground(String... params) {
         String urllink = params[0];
         String str;
@@ -59,7 +75,9 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                 in.close();
                 httpurlconn.disconnect();
                 Log.i("NetworkMapper", "Downloaded " + str);
-                return str;
+
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                return sharedPreferences.getString("nmap_version", str);
             } catch (MalformedURLException e) {
                 // throw new RuntimeException(e);
                 Log.e("NetworkMapper", "MalformedURL: " + urllink);
@@ -77,21 +95,6 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                     Log.e("NetworkMapper","ThreadSleep");
                 }
             }
-        }
-    }
-
-    @Override
-    protected void onPreExecute() {
-        // super.onPreExecute();
-        // take CPU lock to prevent CPU from going off if the user
-        // presses the power button during download
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                getClass().getName());
-        mWakeLock.acquire();
-        //outputView.append(getString(R.string.output_downloading_version_file));
-        if (context instanceof MainActivity) {
-            ((MainActivity) context).sharedProgressDialog.show();
         }
     }
 
@@ -130,7 +133,7 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
         FileHelper.makedir(bindir);
         FileHelper.makedir(dldir);
 
-        String binaryfn=prefixfn+"-binaries-"+eabi+".zip";
+        String binaryfn = prefixfn+"-binaries-"+eabi+".zip";
 
         Log.i("NetworkMapper","Using binaryfn: "+binaryfn);
 
