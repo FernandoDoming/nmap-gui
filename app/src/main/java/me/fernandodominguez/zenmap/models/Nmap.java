@@ -49,6 +49,10 @@ public class Nmap {
         return executeAsRoot(context.getResources().getString(R.string.os_scan_opts), target);
     }
 
+    public String osServiceScan(String target) throws IOException, InterruptedException {
+        return executeAsRoot(context.getResources().getString(R.string.os_service_opts), target);
+    }
+
     private String execute(String options, String target) throws IOException, InterruptedException {
         String xml = context.getResources().getString(R.string.xml_opt);
         List<String> lines = Shell.SH.run(binary + " " + options + " " + xml + " " + target);

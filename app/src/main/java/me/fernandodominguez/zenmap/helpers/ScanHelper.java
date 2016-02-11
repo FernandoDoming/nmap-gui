@@ -23,6 +23,8 @@ public class ScanHelper {
             key = ScanTypes.REGULAR_SCAN;
         } else if ( value.equals(context.getResources().getString(R.string.os_scan)) ) {
             key = ScanTypes.OS_SCAN;
+        } else if ( value.equals(context.getString(R.string.os_service_scan))) {
+            key = ScanTypes.OS_SERVICE_SCAN;
         }
 
         return key;
