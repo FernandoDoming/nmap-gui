@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import me.fernandodominguez.zenmap.fragments.PlaceholderFragment;
+import me.fernandodominguez.zenmap.fragments.ScanDetailFragment;
 import me.fernandodominguez.zenmap.models.ScanResult;
 
 /**
@@ -28,7 +28,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        return PlaceholderFragment.newInstance(position + 1, scanResult);
+        return ScanDetailFragment.newInstance(position + 1, scanResult);
     }
 
     @Override

@@ -5,6 +5,7 @@
     <ListView
         android:id="@+id/general_result_listview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:paddingBottom="50dp" />
 
 </RelativeLayout>

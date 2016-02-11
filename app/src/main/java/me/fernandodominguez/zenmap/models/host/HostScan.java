@@ -24,6 +24,15 @@ public class HostScan extends ScanResult {
     @Column(name = "Hostname")
     private String hostname;
 
+    @Column(name = "Os")
+    private String os;
+
+    @Column(name = "Mac")
+    private String mac;
+
+    @Column(name = "MacVendor")
+    private String macVendor;
+
     @Column(name = "isUp")
     private boolean up;
 
@@ -111,5 +120,29 @@ public class HostScan extends ScanResult {
 
     public void setUp(boolean up) {
         this.up = up;
+    }
+
+    public String getOs() {
+        return os;
+    }
+
+    public void setOs(String os) {
+        this.os = os;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public String getMacVendor() {
+        return macVendor;
+    }
+
+    public void setMacVendor(String macVendor) {
+        this.macVendor = macVendor;
     }
 }

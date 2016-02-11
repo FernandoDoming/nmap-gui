@@ -1,5 +1,6 @@
 package me.fernandodominguez.zenmap.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,7 +21,7 @@ import me.fernandodominguez.zenmap.models.network.NetworkScan;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlaceholderFragment extends Fragment {
+public class ScanDetailFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -32,15 +33,15 @@ public class PlaceholderFragment extends Fragment {
     private final static int NETWORK_MAP_SECTION_NUMBER = 2;
     private final static int RAW_SECTION_NUMBER = 3;
 
-    public PlaceholderFragment() {
+    public ScanDetailFragment() {
     }
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static PlaceholderFragment newInstance(int sectionNumber, ScanResult scanResult) {
-        PlaceholderFragment fragment = new PlaceholderFragment();
+    public static ScanDetailFragment newInstance(int sectionNumber, ScanResult scanResult) {
+        ScanDetailFragment fragment = new ScanDetailFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putSerializable(ARG_SCAN_RESULT, scanResult);
@@ -100,5 +101,32 @@ public class PlaceholderFragment extends Fragment {
         endTime.setText( DateHelper.getDate(scanResult.getEndTime()) );
         elapsedTime.setText( scanResult.getElapsed() + " seconds" );
         summary.setText( scanResult.getSummary() );
+
+        if (scanResult instanceof HostScan) {
+            ViewGroup viewGroup = (ViewGroup) header;
+            HostScan hostScan = (HostScan) scanResult;
+            LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            if ( hostScan.getOs() != null ) {
+                View osView = layoutInflater.inflate(R.layout.general_property, null);
+                ((TextView) osView.findViewById(R.id.property_key)).setText( getString(R.string.os) );
+                ((TextView) osView.findViewById(R.id.property_value)).setText(hostScan.getOs());
+                viewGroup.addView(osView);
+            }
+
+            if ( hostScan.getMac() != null) {
+                View macView = layoutInflater.inflate(R.layout.general_property, null);
+                ((TextView) macView.findViewById(R.id.property_key)).setText( getString(R.string.mac) );
+                ((TextView) macView.findViewById(R.id.property_value)).setText(hostScan.getMac());
+                viewGroup.addView(macView);
+            }
+
+            if ( hostScan.getMac() != null) {
+                View macVendorView = layoutInflater.inflate(R.layout.general_property, null);
+                ((TextView) macVendorView.findViewById(R.id.property_key)).setText( getString(R.string.mac_vendor) );
+                ((TextView) macVendorView.findViewById(R.id.property_value)).setText(hostScan.getMacVendor());
+                viewGroup.addView(macVendorView);
+            }
+        }
     }
 }

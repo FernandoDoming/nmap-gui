@@ -110,5 +110,8 @@
     <string name="dlg_progress_title_extraction">Extracting</string>
     <string name="nmap_binary_path">NMAP_BINARY_PATH</string>
     <string name="summary_title">Summary</string>
+    <string name="os">Operative system</string>
+    <string name="mac">MAC address</string>
+    <string name="mac_vendor">NIC manufacturer</string>
 
 </resources>
