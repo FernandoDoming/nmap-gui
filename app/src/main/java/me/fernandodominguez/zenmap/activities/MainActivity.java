@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Patterns;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -31,8 +32,11 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.ScansListAdapter;
@@ -251,8 +255,18 @@ public class MainActivity extends AppCompatActivity {
         EditText targetEditText = (EditText) view.findViewById(R.id.input_target);
         Spinner  intensitySpinner = (Spinner) view.findViewById(R.id.intensity_spinner);
 
+        String target = targetEditText.getText().toString();
+        // if it is NOT an IP address try to resolve the name
+        if ( !Patterns.IP_ADDRESS.matcher(target).matches() ) {     // TODO IPv6
+            try {
+                target = InetAddress.getByName(target).getHostAddress();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
+
         scan.setName(nameEditText.getText().toString());
-        scan.setTarget(targetEditText.getText().toString());
+        scan.setTarget(target);
         String intensity = ScanHelper.intensityKeyFromValue(this, intensitySpinner.getSelectedItem().toString());
         scan.setIntensity(intensity);
 
