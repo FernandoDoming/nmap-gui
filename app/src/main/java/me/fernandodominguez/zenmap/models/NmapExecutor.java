@@ -2,10 +2,13 @@ package me.fernandodominguez.zenmap.models;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.PowerManager;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.util.Xml;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -102,17 +105,34 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
     }
 
     @Override
-    protected void onPostExecute(Scan scan) {
+    protected void onPostExecute(final Scan scan) {
 
         if (context instanceof MainActivity) {
-            ((MainActivity) context).getAdapter().addScan(scan);
-            ProgressBar scanProgress = (ProgressBar) ((Activity) context).findViewById(R.id.scan_progress);
+            MainActivity mainActivity = (MainActivity) context;
+            mainActivity.getAdapter().addScan(scan);
+            ProgressBar scanProgress = (ProgressBar) mainActivity.findViewById(R.id.scan_progress);
             scanProgress.setIndeterminate(false);
+
+            Snackbar snackbar = Snackbar
+                    .make( mainActivity.coordinatorLayout,
+                            context.getString(R.string.scan_done, scan.getName()),
+                            Snackbar.LENGTH_LONG)
+                    .setAction( context.getString(R.string.view), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, ScanDetailActivity.class);
+                            intent.putExtra("scan", scan);
+                            context.startActivity(intent);
+                        }
+                    });
+            snackbar.show();
+
         } else if (context instanceof ScanDetailActivity) {
             Activity activity = (Activity) context;
             activity.finish();
             activity.startActivity(activity.getIntent());
         }
+
         Log.i(this.getClass().getName(), "Scan finished for " + scan.getTarget());
         mWakeLock.release();
         Log.d(this.getClass().getName(), "Wakelock released");

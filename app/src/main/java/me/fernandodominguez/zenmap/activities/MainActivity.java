@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPrefs;
 
     private ProgressBar scanProgress;
-    private CoordinatorLayout coordinatorLayout;
+    public CoordinatorLayout coordinatorLayout;
     private ListView scanListView;
     public ProgressDialog sharedProgressDialog;
 
@@ -391,8 +391,8 @@ public class MainActivity extends AppCompatActivity {
 
         private void showUndoDelete() {
             Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, "Message is deleted", Snackbar.LENGTH_LONG)
-                    .setAction("UNDO", new View.OnClickListener() {
+                    .make(coordinatorLayout, getString(R.string.scan_deleted), Snackbar.LENGTH_LONG)
+                    .setAction( getString(R.string.undo), new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Snackbar snackbar1 = Snackbar.make(coordinatorLayout, "Feature not implemented, sorry :(", Snackbar.LENGTH_SHORT);
