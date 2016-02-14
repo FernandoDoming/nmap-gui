@@ -6,6 +6,8 @@ import com.activeandroid.annotation.Table;
 
 import java.io.Serializable;
 
+import me.fernandodominguez.zenmap.models.network.Host;
+
 /**
  * Created by fernando on 30/12/15.
  */
@@ -27,9 +29,9 @@ public class Service extends Model implements Serializable {
     @Column(name = "Status")
     private ServiceStatus status;
 
-    // A service belongs in a HostScan
-    @Column(name = "HostScan", onDelete = Column.ForeignKeyAction.CASCADE)
-    protected HostScan hostScan;
+    // A service belongs in a Host
+    @Column(name = "Host", onDelete = Column.ForeignKeyAction.CASCADE)
+    public Host host;
 
     public Service() {
         super();

@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.ScansListAdapter;
+import me.fernandodominguez.zenmap.async.DnsNameResolutionTask;
 import me.fernandodominguez.zenmap.async.SimpleHttpTask;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.helpers.NetworkHelper;
@@ -127,6 +128,10 @@ public class MainActivity extends AppCompatActivity {
         return adapter;
     }
 
+    public Scan getNewScan() {
+        return newScan;
+    }
+
     public String doNextEabi() {
         switch (currentEabi++) {
             case 0:
@@ -135,6 +140,13 @@ public class MainActivity extends AppCompatActivity {
                 return Build.CPU_ABI2;
         }
         return null;
+    }
+
+    public void runScan(Scan scan) {
+        showRunAlert(getResources().getString(R.string.run_alert));
+        scan.run(context, NMAP_BINARY_FILE);
+
+        scanProgress.setIndeterminate(true);
     }
 
     /* Private methods */
@@ -232,11 +244,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         newScan = configureScanFromDialog(dialog, newScan);
-
-                        showRunAlert(getResources().getString(R.string.run_alert));
-                        newScan.run(context, NMAP_BINARY_FILE);
-
-                        scanProgress.setIndeterminate(true);
+                        if (newScan.getTarget() != null) {
+                            runScan(newScan);
+                        }
                     }
                 })
                 .cancelable(false)
@@ -255,20 +265,17 @@ public class MainActivity extends AppCompatActivity {
         EditText targetEditText = (EditText) view.findViewById(R.id.input_target);
         Spinner  intensitySpinner = (Spinner) view.findViewById(R.id.intensity_spinner);
 
+        scan.setName(nameEditText.getText().toString());
+        String intensity = ScanHelper.intensityKeyFromValue(this, intensitySpinner.getSelectedItem().toString());
+        scan.setIntensity(intensity);
+
         String target = targetEditText.getText().toString();
         // if it is NOT an IP address try to resolve the name
         if ( !Patterns.IP_ADDRESS.matcher(target).matches() ) {     // TODO IPv6
-            try {
-                target = InetAddress.getByName(target).getHostAddress();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
+            new DnsNameResolutionTask(context).execute(target);
+        } else {
+            scan.setTarget(target);
         }
-
-        scan.setName(nameEditText.getText().toString());
-        scan.setTarget(target);
-        String intensity = ScanHelper.intensityKeyFromValue(this, intensitySpinner.getSelectedItem().toString());
-        scan.setIntensity(intensity);
 
         return scan;
     }

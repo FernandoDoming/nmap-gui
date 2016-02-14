@@ -8,8 +8,11 @@ import java.io.FileInputStream;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
+
+import me.fernandodominguez.zenmap.async.DnsNameResolutionTask;
 
 /**
  * Created by fernando on 07/02/16.
