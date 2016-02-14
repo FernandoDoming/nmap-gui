@@ -15,4 +15,8 @@ public class ScanTypes {
     public static String INTENSE_SCAN_ALL_TCP_PORTS = "intenseScanAllTcpPorts";
 
     public static String HOST_DISCOVERY = "hostDiscovery";
+    public static String HOST_EXT_DISCOVERY = "hostExtDiscovery";
+    public static String HOST_SERVICE_DISCOVERY = "hostServiceDiscovery";
+    public static String HOST_OS_DISCOVERY = "hostOsDiscovery";
+    public static String HOST_OS_SERVICE_DISCOVERY = "hostOsServiceDiscovery";
 }

@@ -53,6 +53,22 @@ public class Nmap {
         return executeAsRoot(context.getResources().getString(R.string.os_service_opts), target);
     }
 
+    public String hostExtDiscovery(String target) throws IOException, InterruptedException {
+        return executeAsRoot(context.getResources().getString(R.string.host_discovery_opts), target);
+    }
+
+    public String hostServiceDiscovery(String target) throws IOException, InterruptedException {
+        return executeAsRoot(context.getResources().getString(R.string.host_service_discovery_opts), target);
+    }
+
+    public String hostOsDiscovery(String target) throws IOException, InterruptedException {
+        return executeAsRoot(context.getResources().getString(R.string.host_os_discovery_opts), target);
+    }
+
+    public String hostOsServiceDiscovery(String target) throws IOException, InterruptedException {
+        return executeAsRoot(context.getResources().getString(R.string.host_os_service_discovery_opts), target);
+    }
+
     private String execute(String options, String target) throws IOException, InterruptedException {
         String xml = context.getResources().getString(R.string.xml_opt);
         List<String> lines = Shell.SH.run(binary + " " + options + " " + xml + " " + target);

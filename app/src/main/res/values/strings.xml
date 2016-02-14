@@ -16,9 +16,17 @@
     <string name="network_scan_title">Network scan</string>
     <string-array name="network_scan_types">
         <item>@string/host_discovery</item>
+        <item>@string/host_ext_discovery</item>
+        <item>@string/host_service_discovery</item>
+        <item>@string/host_os_discovery</item>
+        <item>@string/host_os_service_discovery</item>
     </string-array>
 
     <string name="host_discovery">Host discovery</string>
+    <string name="host_ext_discovery">Extended host discovery</string>
+    <string name="host_service_discovery">Services discovery</string>
+    <string name="host_os_discovery">Operative system discovery</string>
+    <string name="host_os_service_discovery">Operative system + service discovery</string>
 
     <string name="network_target">Target network</string>
     <string name="network_target_hint">192.168.0.0/24</string>
@@ -76,6 +84,9 @@
     <string name="intense_scan_all_tcp_opts">-p 1-65535 -A -T4 -v</string>
     <!-- Network scan options -->
     <string name="host_discovery_opts">-sP -v --reason</string>
+    <string name="host_service_discovery_opts">-sV -v --reason</string>
+    <string name="host_os_discovery_opts">-O -v --reason</string>
+    <string name="host_os_service_discovery_opts">-O -sV -v --reason</string>
 
     <!-- Misc options -->
     <string name="xml_opt">-oX -</string>

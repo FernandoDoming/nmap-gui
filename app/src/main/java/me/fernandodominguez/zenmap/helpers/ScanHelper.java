@@ -25,6 +25,14 @@ public class ScanHelper {
             key = ScanTypes.OS_SCAN;
         } else if ( value.equals(context.getString(R.string.os_service_scan))) {
             key = ScanTypes.OS_SERVICE_SCAN;
+        } else if ( value.equals(context.getString(R.string.host_ext_discovery))) {
+            key = ScanTypes.HOST_EXT_DISCOVERY;
+        } else if ( value.equals(context.getString(R.string.host_service_discovery))) {
+            key = ScanTypes.HOST_SERVICE_DISCOVERY;
+        } else if ( value.equals(context.getString(R.string.host_os_discovery))) {
+            key = ScanTypes.HOST_OS_DISCOVERY;
+        } else if ( value.equals(context.getString(R.string.host_os_service_discovery))) {
+            key = ScanTypes.HOST_OS_SERVICE_DISCOVERY;
         }
 
         return key;
