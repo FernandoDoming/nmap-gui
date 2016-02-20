@@ -38,9 +38,11 @@ public class NetworkScan extends ScanResult {
     }
 
     public List<Host> getHosts() {
-        if (hosts == null) hosts = getMany(Host.class, "NetworkScan");
-        for (Host host : hosts) {
-            host.getStatus();
+        if (hosts == null) {
+            hosts = getMany(Host.class, "NetworkScan");
+            for (Host host : hosts) {
+                host.getStatus();
+            }
         }
         return hosts;
     }
@@ -75,6 +77,12 @@ public class NetworkScan extends ScanResult {
                 }
             }
         }
+    }
+
+    @Override
+    public ScanResult populate() {
+        this.hosts = getHosts();
+        return this;
     }
 
     public static List<NetworkScan> all() {

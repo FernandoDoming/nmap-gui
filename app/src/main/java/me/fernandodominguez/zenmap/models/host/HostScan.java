@@ -44,6 +44,14 @@ public class HostScan extends ScanResult {
     @Override
     public void saveWithChildren() {
         this.save();
+        host.hostScan = this;
+        host.saveWithChildren();
+    }
+
+    @Override
+    public ScanResult populate() {
+        this.host = getHost();
+        return this;
     }
 
     @Override
@@ -54,5 +62,17 @@ public class HostScan extends ScanResult {
     public static List<HostScan> all() {
         List<HostScan> scans = new Select().all().from(HostScan.class).execute();
         return scans;
+    }
+
+    public Host getHost() {
+        if (host == null) {
+            host = getMany(Host.class, "HostScan").get(0);
+            host.getStatus();
+        }
+        return host;
+    }
+
+    public void setHost(Host host) {
+        this.host = host;
     }
 }

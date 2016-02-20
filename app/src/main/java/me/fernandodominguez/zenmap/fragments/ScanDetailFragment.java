@@ -67,7 +67,7 @@ public class ScanDetailFragment extends Fragment {
                     resultsListView.setAdapter(adapter);
                 } else if (scanResult instanceof HostScan) {
                     HostScan hostScan = (HostScan) scanResult;
-                    GeneralResultsListAdapter<Service> adapter = new GeneralResultsListAdapter<>(getActivity(), hostScan.getServices());
+                    GeneralResultsListAdapter<Service> adapter = new GeneralResultsListAdapter<>(getActivity(), hostScan.getHost().getServices());
                     resultsListView.setAdapter(adapter);
                 }
 
@@ -107,24 +107,24 @@ public class ScanDetailFragment extends Fragment {
             HostScan hostScan = (HostScan) scanResult;
             LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            if ( hostScan.getOs() != null ) {
+            if ( hostScan.getHost().getOs() != null ) {
                 View osView = layoutInflater.inflate(R.layout.general_property, null);
                 ((TextView) osView.findViewById(R.id.property_key)).setText( getString(R.string.os) );
-                ((TextView) osView.findViewById(R.id.property_value)).setText(hostScan.getOs());
+                ((TextView) osView.findViewById(R.id.property_value)).setText(hostScan.getHost().getOs());
                 viewGroup.addView(osView);
             }
 
-            if ( hostScan.getMac() != null) {
+            if ( hostScan.getHost().getMac() != null) {
                 View macView = layoutInflater.inflate(R.layout.general_property, null);
                 ((TextView) macView.findViewById(R.id.property_key)).setText( getString(R.string.mac) );
-                ((TextView) macView.findViewById(R.id.property_value)).setText(hostScan.getMac());
+                ((TextView) macView.findViewById(R.id.property_value)).setText(hostScan.getHost().getMac());
                 viewGroup.addView(macView);
             }
 
-            if ( hostScan.getMac() != null) {
+            if ( hostScan.getHost().getMac() != null) {
                 View macVendorView = layoutInflater.inflate(R.layout.general_property, null);
                 ((TextView) macVendorView.findViewById(R.id.property_key)).setText( getString(R.string.mac_vendor) );
-                ((TextView) macVendorView.findViewById(R.id.property_value)).setText(hostScan.getMacVendor());
+                ((TextView) macVendorView.findViewById(R.id.property_value)).setText(hostScan.getHost().getMacVendor());
                 viewGroup.addView(macVendorView);
             }
         }

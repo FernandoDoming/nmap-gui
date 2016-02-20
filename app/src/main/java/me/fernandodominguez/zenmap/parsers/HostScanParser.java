@@ -10,6 +10,8 @@ import java.util.List;
 import me.fernandodominguez.zenmap.models.host.HostScan;
 import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.host.ServiceStatus;
+import me.fernandodominguez.zenmap.models.network.Host;
+import me.fernandodominguez.zenmap.models.network.HostStatus;
 
 /**
  * Created by fernando on 30/12/15.
@@ -20,24 +22,50 @@ public class HostScanParser {
 
     public HostScan parse(XmlPullParser parser) throws IOException, XmlPullParserException {
         HostScan hostScan = new HostScan();
+
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) continue;
+
+            String name = parser.getName();
+            switch (name) {
+                case "host":
+                    hostScan.setHost( readHost(parser) );
+                    break;
+                case "finished":
+                    hostScan.setEndTime( Long.parseLong(parser.getAttributeValue(null, "time")) );
+                    hostScan.setElapsed( Float.parseFloat(parser.getAttributeValue(null, "elapsed")) );
+                    hostScan.setSummary( parser.getAttributeValue(null, "summary") );
+                    break;
+                case "nmaprun":
+                    hostScan.setStartTime(Long.parseLong(parser.getAttributeValue(null, "start")));
+                    break;
+            }
+        }
+
+        return hostScan;
+    }
+
+    public Host readHost(XmlPullParser parser) throws XmlPullParserException, IOException {
+
+        Host host = new Host();
         List<Service> services = new ArrayList<>();
         String hostname  = null;
 
-        while (parser.next() != XmlPullParser.END_DOCUMENT) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
+        int depth = parser.getDepth();
+        while (!(parser.next() == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) continue;
+
             String name = parser.getName();
             switch (name) {
                 case "address":
                     String addrType = parser.getAttributeValue(null, "addrtype");
                     switch (addrType) {
                         case "ipv4":
-                            hostScan.setAddress(parser.getAttributeValue(null, "addr"));
+                            host.setAddress(parser.getAttributeValue(null, "addr"));
                             break;
                         case "mac":
-                            hostScan.setMac(parser.getAttributeValue(null, "addr"));
-                            hostScan.setMacVendor(parser.getAttributeValue(null, "vendor"));
+                            host.setMac(parser.getAttributeValue(null, "addr"));
+                            host.setMacVendor(parser.getAttributeValue(null, "vendor"));
                             break;
                     }
                     break;
@@ -47,25 +75,21 @@ public class HostScanParser {
                 case "hostname":
                     hostname = readHostname(parser);
                     break;
-                case "finished":
-                    hostScan.setEndTime(Long.parseLong(parser.getAttributeValue(null, "time")));
-                    hostScan.setElapsed(Float.parseFloat(parser.getAttributeValue(null, "elapsed")));
-                    hostScan.setSummary(parser.getAttributeValue(null, "summary"));
-                    break;
-                case "hosts":
-                    hostScan.setUp(Integer.parseInt(parser.getAttributeValue(null, "up")) > 0);
-                    break;
-                case "nmaprun":
-                    hostScan.setStartTime(Long.parseLong(parser.getAttributeValue(null, "start")));
-                    break;
+                //case "hosts":
+                //    host.setUp(Integer.parseInt(parser.getAttributeValue(null, "up")) > 0);
+                //    break;
                 case "osmatch":
-                    hostScan.setOs(parser.getAttributeValue(null, "name"));
+                    host.setOs(parser.getAttributeValue(null, "name"));
+                    break;
+                case "status":
+                    host.setStatus(readHostStatus(parser));
                     break;
             }
         }
-        hostScan.setServices(services);
-        hostScan.setHostname(hostname);
-        return hostScan;
+        host.setServices(services);
+        host.setHostname(hostname);
+
+        return host;
     }
 
     private List<Service> readPorts(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -143,5 +167,13 @@ public class HostScanParser {
         String state = parser.getAttributeValue(null, "state");
         String reason = parser.getAttributeValue(null, "reason");
         return new ServiceStatus(state, reason);
+    }
+
+    private HostStatus readHostStatus(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "status");
+        String status = parser.getAttributeValue(null, "state");
+        String reason = parser.getAttributeValue(null, "reason");
+        //parser.require(XmlPullParser.END_TAG, ns, "status");
+        return new HostStatus(status, reason);
     }
 }

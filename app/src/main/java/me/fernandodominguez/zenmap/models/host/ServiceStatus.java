@@ -18,7 +18,7 @@ public class ServiceStatus extends Model implements Serializable {
 
     // A service status belongs to a service
     @Column(name = "Service", onDelete = Column.ForeignKeyAction.CASCADE)
-    protected Service service;
+    public Service service;
 
     public ServiceStatus() {
         super();

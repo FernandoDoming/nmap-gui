@@ -52,6 +52,8 @@ public abstract class ScanResult extends Model implements IScanResult, Serializa
         return getName();
     }
 
+    public abstract ScanResult populate();
+
     /* Getters & setters */
 
     public String getName() {

@@ -29,7 +29,7 @@ public class Service extends Model implements Serializable {
     @Column(name = "Status")
     private ServiceStatus status;
 
-    // A service belongs in a Host
+    // A service belongs to a Host
     @Column(name = "Host", onDelete = Column.ForeignKeyAction.CASCADE)
     public Host host;
 

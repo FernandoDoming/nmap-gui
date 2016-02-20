@@ -76,6 +76,7 @@ public class Scan extends Model implements Serializable {
                 Log.i(this.getClass().getName(), this + " has no NetworkScans");
             }
         }
+        scanResult = scanResult.populate();
         return scanResult;
     }
 

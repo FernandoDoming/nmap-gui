@@ -29,6 +29,11 @@ public class HostStatus extends Model implements Serializable {
         super();
     }
 
+    public HostStatus(String state) {
+        super();
+        this.state = state;
+    }
+
     public HostStatus(String state, String reason) {
         super();
         this.state = state;

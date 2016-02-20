@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
 import me.fernandodominguez.zenmap.models.network.HostStatus;
 import me.fernandodominguez.zenmap.models.network.NetworkScan;
@@ -27,14 +28,18 @@ public class NetworkScanParser {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("host")) {
-                hosts.add(readHost(parser));
-            } else if (name.equals("finished")) {
-                networkScan.setEndTime( Long.parseLong(parser.getAttributeValue(null, "time")) );
-                networkScan.setElapsed( Float.parseFloat(parser.getAttributeValue(null, "elapsed")) );
-                networkScan.setSummary( parser.getAttributeValue(null, "summary") );
-            } else if (name.equals("nmaprun")) {
-                networkScan.setStartTime( Long.parseLong(parser.getAttributeValue(null, "start")) );
+            switch (name) {
+                case "host":
+                    hosts.add( new HostScanParser().readHost(parser) );
+                    break;
+                case "finished":
+                    networkScan.setEndTime(Long.parseLong(parser.getAttributeValue(null, "time")));
+                    networkScan.setElapsed(Float.parseFloat(parser.getAttributeValue(null, "elapsed")));
+                    networkScan.setSummary(parser.getAttributeValue(null, "summary"));
+                    break;
+                case "nmaprun":
+                    networkScan.setStartTime(Long.parseLong(parser.getAttributeValue(null, "start")));
+                    break;
             }
         }
         networkScan.setHosts(hosts);
@@ -52,21 +57,15 @@ public class NetworkScanParser {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("status")) {
-                status = readStatus(parser);
-            } else if (name.equals("address")) {
+            if (name.equals("address")) {
                 address = readAddress(parser);
+            } else if (name.equals("osmatch")) {
+                String os = parser.getAttributeValue(ns, "name");
             }
         }
-        return new Host(address, status);
-    }
-
-    private HostStatus readStatus(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "status");
-        String status = parser.getAttributeValue(null, "state");
-        String reason = parser.getAttributeValue(null, "reason");
-        //parser.require(XmlPullParser.END_TAG, ns, "status");
-        return new HostStatus(status, reason);
+        List<Service> services = new ArrayList<>();
+        services.add(new Service());
+        return new Host(address, services, status);
     }
 
     private String readAddress(XmlPullParser parser) throws IOException, XmlPullParserException {
