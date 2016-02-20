@@ -30,7 +30,10 @@ public class NetworkScanParser {
             String name = parser.getName();
             switch (name) {
                 case "host":
-                    hosts.add( new HostScanParser().readHost(parser) );
+                    Host host = new HostScanParser().readHost(parser);
+                    if (host.isUp()) {
+                        hosts.add(host);
+                    }
                     break;
                 case "finished":
                     networkScan.setEndTime(Long.parseLong(parser.getAttributeValue(null, "time")));
@@ -44,33 +47,5 @@ public class NetworkScanParser {
         }
         networkScan.setHosts(hosts);
         return networkScan;
-    }
-
-    private Host readHost(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "host");
-        HostStatus status = null;
-        String address = null;
-
-        int depth = parser.getDepth();
-        while (!(parser.next() == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String name = parser.getName();
-            if (name.equals("address")) {
-                address = readAddress(parser);
-            } else if (name.equals("osmatch")) {
-                String os = parser.getAttributeValue(ns, "name");
-            }
-        }
-        List<Service> services = new ArrayList<>();
-        services.add(new Service());
-        return new Host(address, services, status);
-    }
-
-    private String readAddress(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "address");
-        String address = parser.getAttributeValue(null, "addr");
-        return address;
     }
 }

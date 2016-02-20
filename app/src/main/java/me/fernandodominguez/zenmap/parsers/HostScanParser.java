@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.fernandodominguez.zenmap.constants.Version;
 import me.fernandodominguez.zenmap.models.host.HostScan;
 import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.host.ServiceStatus;
@@ -158,7 +159,7 @@ public class HostScanParser {
         if (product != null) v = v + product;
         if (version != null) v = v + version;
         if (extra != null) v = v + extra;
-        if (v.equals("")) v = "Version unknown";
+        if (v.equals("")) v = Version.UNKNOWN;
         return v;
     }
 
