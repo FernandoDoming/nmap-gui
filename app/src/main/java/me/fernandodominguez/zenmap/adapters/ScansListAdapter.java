@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.fernandodominguez.zenmap.R;
+import me.fernandodominguez.zenmap.helpers.ScanHelper;
 import me.fernandodominguez.zenmap.models.Scan;
 import me.fernandodominguez.zenmap.models.ScanResult;
 import me.fernandodominguez.zenmap.models.host.HostScan;
@@ -66,7 +67,7 @@ public class ScansListAdapter extends BaseAdapter {
         } else if (result instanceof HostScan) {
             HostScan hostScan = (HostScan) result;
             if (hostScan.getHost().isUp()) {
-                imageView.setImageResource(R.drawable.network_server);
+                imageView.setImageResource( ScanHelper.getDrawableIcon(hostScan.getHost().getOs()) );
             } else {
                 imageView.setImageResource(R.drawable.offline_host);
             }

@@ -170,7 +170,7 @@ public class ScanDetailFragment extends Fragment {
             viewGroup.addView(macView);
         }
 
-        if ( host.getMac() != null) {
+        if ( host.getMacVendor() != null) {
             View macVendorView = layoutInflater.inflate(R.layout.general_property, null);
             ((TextView) macVendorView.findViewById(R.id.property_key)).setText( getString(R.string.mac_vendor) );
             ((TextView) macVendorView.findViewById(R.id.property_value)).setText(host.getMacVendor());

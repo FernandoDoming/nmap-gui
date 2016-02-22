@@ -37,4 +37,18 @@ public class ScanHelper {
 
         return key;
     }
+
+    public static int getDrawableIcon(String os) {
+        if (os == null) return R.drawable.desktop;
+
+        if (os.startsWith("Apple")) {
+            return R.drawable.apple;
+        } else if (os.startsWith("Microsoft")) {
+            return R.drawable.microsoft;
+        } else if (os.startsWith("Linux")) {
+            return R.drawable.tux;
+        } else {
+            return R.drawable.desktop;
+        }
+    }
 }
