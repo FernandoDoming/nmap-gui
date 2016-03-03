@@ -64,6 +64,12 @@ public class Host extends Model implements Serializable {
         this.status = status;
     }
 
+    public String getTitle() {
+        if (hostname  == null && mac == null) return address;
+        if (hostname != null) return hostname;
+        return mac;
+    }
+
     public String getAddress() {
         return address;
     }

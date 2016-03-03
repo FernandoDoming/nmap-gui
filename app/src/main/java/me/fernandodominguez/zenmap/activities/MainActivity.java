@@ -42,6 +42,7 @@ import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.ScansListAdapter;
 import me.fernandodominguez.zenmap.async.DnsNameResolutionTask;
 import me.fernandodominguez.zenmap.async.SimpleHttpTask;
+import me.fernandodominguez.zenmap.constants.Extras;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.helpers.NetworkHelper;
 import me.fernandodominguez.zenmap.helpers.ScanHelper;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, ScanDetailActivity.class);
-                intent.putExtra("scan", scans.get(position));
+                intent.putExtra(Extras.SCAN_ID_EXTRA, scans.get(position).getId());
                 context.startActivity(intent);
             }
         });

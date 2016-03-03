@@ -1,6 +1,7 @@
 package me.fernandodominguez.zenmap.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,7 +19,9 @@ import java.lang.reflect.Modifier;
 import java.util.Set;
 
 import me.fernandodominguez.zenmap.R;
+import me.fernandodominguez.zenmap.activities.HostDetailActivity;
 import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
+import me.fernandodominguez.zenmap.constants.Extras;
 import me.fernandodominguez.zenmap.constants.Version;
 import me.fernandodominguez.zenmap.helpers.DateHelper;
 import me.fernandodominguez.zenmap.models.ScanResult;
@@ -70,26 +73,14 @@ public class ScanDetailFragment extends Fragment {
                 rootView = inflater.inflate(R.layout.scan_general_results_layout, container, false);
                 ListView resultsListView = (ListView) rootView.findViewById(R.id.general_result_listview);
 
-                if (scanResult instanceof NetworkScan) {
-                    NetworkScan networkScan = (NetworkScan) scanResult;
-                    GeneralResultsListAdapter<Host> adapter = new GeneralResultsListAdapter<>(getActivity(), networkScan.getUpHosts());
-                    resultsListView.setAdapter(adapter);
-                } else if (scanResult instanceof HostScan) {
-                    HostScan hostScan = (HostScan) scanResult;
-                    GeneralResultsListAdapter<Service> adapter = new GeneralResultsListAdapter<>(getActivity(), hostScan.getHost().getServices());
-                    resultsListView.setAdapter(adapter);
-                }
+                GeneralResultsListAdapter<Host> adapter = new GeneralResultsListAdapter<>(getActivity(), scanResult.getHosts());
+                resultsListView.setAdapter(adapter);
 
                 resultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if (scanResult instanceof NetworkScan) {
-                            Host host = ((NetworkScan) scanResult).getUpHosts().get(position - 1);
-                            showHostDetail(host);
-                        } else if (scanResult instanceof HostScan) {
-                            Service service = ((HostScan) scanResult).getHost().getServices().get(position - 1);
-                            showServiceDetail(service);
-                        }
+                        Host host = scanResult.getHosts().get(position - 1);
+                        showHostDetail(host);
                     }
                 });
 
@@ -112,25 +103,9 @@ public class ScanDetailFragment extends Fragment {
     }
 
     private void showHostDetail(Host host) {
-        MaterialDialog dialog = showDetailDialog(host.getHostname());
-        View view = dialog.getCustomView();
-        addHostDetails((ViewGroup) view, host);
-    }
-
-    private void showServiceDetail(Service service) {
-        MaterialDialog dialog = showDetailDialog(service.getService());
-        View view = dialog.getCustomView();
-        addServiceDetails( (ViewGroup) view, service );
-    }
-
-    private MaterialDialog showDetailDialog(String title) {
-        MaterialDialog dialog = new MaterialDialog.Builder(getContext())
-                .title(title)
-                .customView(R.layout.item_detail_dialog, true)
-                .positiveText(R.string.dismiss)
-                .show();
-
-        return dialog;
+        Intent intent = new Intent(getContext(), HostDetailActivity.class);
+        intent.putExtra(Extras.HOST_ID_EXTRA, host.getId());
+        startActivity(intent);
     }
 
     private void fillHeader(View header, ScanResult scanResult) {
@@ -145,87 +120,5 @@ public class ScanDetailFragment extends Fragment {
         endTime.setText( DateHelper.getDate(scanResult.getEndTime()) );
         elapsedTime.setText( scanResult.getElapsed() + " seconds" );
         summary.setText( scanResult.getSummary() );
-
-        if (scanResult instanceof HostScan) {
-            ViewGroup viewGroup = (ViewGroup) header;
-            HostScan hostScan = (HostScan) scanResult;
-            addHostDetails(viewGroup, hostScan.getHost());
-        }
-    }
-
-    private void addHostDetails(ViewGroup viewGroup, Host host) {
-        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        if ( host.getOs() != null ) {
-            View osView = layoutInflater.inflate(R.layout.general_property, null);
-            ((TextView) osView.findViewById(R.id.property_key)).setText( getString(R.string.os) );
-            ((TextView) osView.findViewById(R.id.property_value)).setText(host.getOs());
-            viewGroup.addView(osView);
-        }
-
-        if ( host.getMac() != null) {
-            View macView = layoutInflater.inflate(R.layout.general_property, null);
-            ((TextView) macView.findViewById(R.id.property_key)).setText( getString(R.string.mac) );
-            ((TextView) macView.findViewById(R.id.property_value)).setText(host.getMac());
-            viewGroup.addView(macView);
-        }
-
-        if ( host.getMacVendor() != null) {
-            View macVendorView = layoutInflater.inflate(R.layout.general_property, null);
-            ((TextView) macVendorView.findViewById(R.id.property_key)).setText( getString(R.string.mac_vendor) );
-            ((TextView) macVendorView.findViewById(R.id.property_value)).setText(host.getMacVendor());
-            viewGroup.addView(macVendorView);
-        }
-    }
-
-    private void addServiceDetails(ViewGroup viewGroup, Service service) {
-        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        if (service.getService() != null) {
-            View portView = layoutInflater.inflate(R.layout.general_property, null);
-            ((TextView) portView.findViewById(R.id.property_key)).setText( getString(R.string.service) );
-            ((TextView) portView.findViewById(R.id.property_value)).setText(service.getService());
-            viewGroup.addView(portView);
-        }
-
-        if (service.getVersion() != null) {
-            View portView = layoutInflater.inflate(R.layout.general_property, null);
-            ((TextView) portView.findViewById(R.id.property_key)).setText( getString(R.string.service_version) );
-            ((TextView) portView.findViewById(R.id.property_value)).setText(service.getVersion());
-            viewGroup.addView(portView);
-
-            if (!service.getVersion().equals(Version.UNKNOWN)) {
-                Button button = new Button(getContext());
-                button.setText(R.string.check_vulnerabiities);
-                viewGroup.addView(button);
-            }
-        }
-
-        if (service.getPort() != null) {
-            View portView = layoutInflater.inflate(R.layout.general_property, null);
-            ((TextView) portView.findViewById(R.id.property_key)).setText( getString(R.string.port) );
-            ((TextView) portView.findViewById(R.id.property_value)).setText(service.getPort());
-            viewGroup.addView(portView);
-        }
-
-        if (service.getProtocol() != null) {
-            View protocolView = layoutInflater.inflate(R.layout.general_property, null);
-            ((TextView) protocolView.findViewById(R.id.property_key)).setText( getString(R.string.protocol) );
-            ((TextView) protocolView.findViewById(R.id.property_value)).setText(service.getProtocol());
-            viewGroup.addView(protocolView);
-        }
-
-        if (service.getStatus() != null) {
-            View statusView = layoutInflater.inflate(R.layout.general_property, null);
-            ((TextView) statusView.findViewById(R.id.property_key)).setText( getString(R.string.status) );
-            ((TextView) statusView.findViewById(R.id.property_value)).setText(service.getStatus().getState());
-            viewGroup.addView(statusView);
-
-            View statusReasonView = layoutInflater.inflate(R.layout.general_property, null);
-            ((TextView) statusReasonView.findViewById(R.id.property_key)).setText( getString(R.string.status_reason) );
-            ((TextView) statusReasonView.findViewById(R.id.property_value)).setText(service.getStatus().getReason());
-            viewGroup.addView(statusReasonView);
-        }
-
     }
 }

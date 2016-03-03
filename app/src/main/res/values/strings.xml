@@ -139,5 +139,8 @@
     <string name="status">Service status</string>
     <string name="status_reason">Service status reason</string>
     <string name="check_vulnerabiities">Check for vulnerabilities</string>
+    <string name="title_activity_host_detail">HostDetailActivity</string>
+    <string name="host_address">Address</string>
+    <string name="unknown">Unknown</string>
 
 </resources>

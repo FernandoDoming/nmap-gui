@@ -5,6 +5,9 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 import java.io.Serializable;
+import java.util.List;
+
+import me.fernandodominguez.zenmap.models.network.Host;
 
 /**
  * Created by fernando on 30/12/15.
@@ -53,6 +56,8 @@ public abstract class ScanResult extends Model implements IScanResult, Serializa
     }
 
     public abstract ScanResult populate();
+
+    public abstract List<Host> getHosts();
 
     /* Getters & setters */
 

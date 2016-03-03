@@ -4,6 +4,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.fernandodominguez.zenmap.models.ScanResult;
@@ -52,6 +53,13 @@ public class HostScan extends ScanResult {
     public ScanResult populate() {
         this.host = getHost();
         return this;
+    }
+
+    @Override
+    public List<Host> getHosts() {
+        List<Host> hosts = new ArrayList<>();
+        hosts.add(this.getHost());
+        return hosts;
     }
 
     @Override
