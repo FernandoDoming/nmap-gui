@@ -2,6 +2,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference
         android:title="Preferred Nmap version"
-        android:key="nmap_version"
-        android:defaultValue="nmap-6.47"/>
+        android:key="nmap_version" />
 </PreferenceScreen>

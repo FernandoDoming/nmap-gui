@@ -1,6 +1,5 @@
 package me.fernandodominguez.zenmap.async;
 
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -21,10 +20,16 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.activities.MainActivity;
 import me.fernandodominguez.zenmap.helpers.FileHelper;
+
+/*
+* Attributtion of this file is mainly to kost @ github
+* */
 
 public class SimpleHttpTask extends AsyncTask<String, Void, String> {
     private final Context context;
@@ -46,7 +51,6 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 getClass().getName());
         mWakeLock.acquire();
-        //outputView.append(getString(R.string.output_downloading_version_file));
         if (context instanceof MainActivity) {
             ((MainActivity) context).sharedProgressDialog.show();
         }
@@ -55,7 +59,7 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         String urllink = params[0];
-        String str;
+        String version;
 
         Integer count = 0;
         Integer maxTries = 3;
@@ -71,13 +75,13 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                 InputStream in = new BufferedInputStream(httpurlconn.getInputStream());
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
 
-                str = bufferedReader.readLine();
+                version = bufferedReader.readLine();
                 in.close();
                 httpurlconn.disconnect();
-                Log.i("NetworkMapper", "Downloaded " + str);
+                Log.i("NetworkMapper", "Latest version: " + version);
 
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                return sharedPreferences.getString("nmap_version", str);
+                return sharedPreferences.getString("nmap_version", version);
             } catch (MalformedURLException e) {
                 // throw new RuntimeException(e);
                 Log.e("NetworkMapper", "MalformedURL: " + urllink);
@@ -102,15 +106,8 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         mWakeLock.release();
 
-        if (result == null) {
-            // XXX reporting with null doesn't make sense
-            // outputView.append(getString(R.string.toast_download_version_error)+"\n");
-            // Toast.makeText(context, getString(R.string.toast_download_version_error) + result, Toast.LENGTH_LONG).show();
-            return;
-        }
+        if (result == null) { return; }
 
-        //outputView.append(getString(R.string.toast_download_version_ok) + "\n");
-        //Toast.makeText(context,getString(R.string.toast_download_version_ok), Toast.LENGTH_SHORT).show();
         if (context instanceof MainActivity) {
             MainActivity activity = (MainActivity) context;
             activity.sharedProgressDialog.dismiss();
@@ -133,9 +130,20 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
         FileHelper.makedir(bindir);
         FileHelper.makedir(dldir);
 
-        String binaryfn = prefixfn+"-binaries-"+eabi+".zip";
+        // Parse version number. Group 0 is major, group 1 is minor
+        Pattern p = Pattern.compile("nmap-(\\d+)\\.(\\d+)");
+        Matcher m = p.matcher(prefixfn);
 
-        Log.i("NetworkMapper","Using binaryfn: "+binaryfn);
+        if (!m.matches()) {
+            Log.e("NetworkMapper", "Could not parse nmap version numbers. Aborting download");
+            return;
+        }
+
+        String major = m.group(1);
+        String minor = m.group(2);
+
+        String binaryfn = prefixfn+"-binaries-"+eabi+".zip";
+        Log.i("NetworkMapper", "Using binaryfn: " + binaryfn);
 
         if (context instanceof MainActivity) {
 
@@ -151,9 +159,7 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                         if (nextEabi == null) {
                             if (doneFallback) {
                                 Toast.makeText(context, context.getString(R.string.toast_dowload_binary_error) + result, Toast.LENGTH_LONG).show();
-                                //outputView.append(getString(R.string.output_no_more_architectures_to_try) + ": " + result + ": "+archs+"\n");
                             } else {
-                                //outputView.append(getString(R.string.output_trying_fallback_archs));
                                 if (archs.contains("mips")) {
                                     nextEabi = "mips";
                                 }
@@ -167,14 +173,11 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                                 downloadBinary(prefixfn, nextEabi);
                             }
                         } else {
-                            //outputView.append(getString(R.string.output_trying_following_arch) + nextEabi + "\n");
-                            //Toast.makeText(context, getString(R.string.toast_download_binary_nextarch)+ nextEabi,Toast.LENGTH_LONG).show();
                             downloadBinary(prefixfn, nextEabi);
                         }
                         return;
                     }
 
-                    //outputView.append(getString(R.string.toast_download_binary_ok) + "\n");
                     Toast.makeText(context, context.getString(R.string.toast_download_binary_ok), Toast.LENGTH_SHORT).show();
 
                     String bindir = context.getFilesDir().getParent() + "/bin/";
@@ -183,8 +186,6 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                         @Override
                         protected void onPostExecute(String result) {
                             mainActivity.sharedProgressDialog.dismiss();
-                            //outputView.append(getString(R.string.toast_binary_extraction_ok)+"\n");
-                            //Toast.makeText(context,getString(R.string.toast_binary_extraction_ok), Toast.LENGTH_SHORT).show();
                             Log.i("NetworkMapper", "Completed. Directory: " + result);
                             String bindir = context.getFilesDir().getParent() + "/bin/";
                             String[] commands = {"ncat", "ndiff", "nmap", "nping"};
@@ -193,8 +194,6 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                                     Runtime.getRuntime().exec("/system/bin/chmod 755 " + bindir + singlecommand);
                                 }
                             } catch (IOException e) {
-                                //outputView.append(getString(R.string.output_error_setting_permission)+"\n");
-                                // Toast.makeText(context,"Error setting permissions", Toast.LENGTH_SHORT).show();
                                 Log.e("NetworkMapper", "IO Exception: \n" + e.toString());
                             }
 
@@ -240,7 +239,10 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                     mWakeLock.release();
                 }
             };
-            binaryTask.execute(mainActivity.NMAP_DOWNLOAD_URL + "/" + binaryfn, dldir + "/" + binaryfn, prefixfn, appdir);
+            binaryTask.execute(mainActivity.NMAP_DOWNLOAD_URL + "/v" + major + "." + minor + "/" + binaryfn,
+                               dldir + "/" + binaryfn,
+                               prefixfn,
+                               appdir);
 
             mainActivity.sharedProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
@@ -255,12 +257,22 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
         String root = Environment.getExternalStorageDirectory().toString();
         final String datadldir = root + "/opt";
 
+        // Parse version number. Group 0 is major, group 1 is minor
+        Pattern p = Pattern.compile("nmap-(\\d+)\\.(\\d+)");
+        Matcher m = p.matcher(prefixfn);
+
+        if (!m.matches()) {
+            Log.e("NetworkMapper", "Could not parse nmap version numbers. Aborting download");
+            return;
+        }
+
+        String major = m.group(1);
+        String minor = m.group(2);
+
         Log.i("NetworkMapper", "Using datadldir: " + datadldir);
         FileHelper.makedir(datadldir);
 
         String datafn = prefixfn + "-data.zip";
-
-        //outputView.append(getString(R.string.output_download_datafn) + datafn + "\n");
 
         if (context instanceof MainActivity) {
             final MainActivity mainActivity = (MainActivity) context;
@@ -269,13 +281,9 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                 protected void onPostExecute(String result) {
                     mainActivity.sharedProgressDialog.dismiss();
                     if (result != null) {
-                        //outputView.append(getString(R.string.toast_data_download_error) + result);
-                        // Toast.makeText(context, getString(R.string.toast_data_download_error) + result, Toast.LENGTH_LONG).show();
                         mWakeLock.release();
                         return;
                     }
-                    //outputView.append(getString(R.string.toast_data_download_ok) + "\n");
-                    // Toast.makeText(context, getString(R.string.toast_data_download_ok), Toast.LENGTH_SHORT).show();
 
                     String datadir = Environment.getExternalStorageDirectory().toString() + "/opt/";
                     final UnzipTask datazipTask = new UnzipTask(this.context, mainActivity.sharedProgressDialog) {
@@ -309,9 +317,6 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                             mainActivity.sharedProgressDialog.dismiss();
                             Toast.makeText(context, context.getString(R.string.toast_data_extraction_ok), Toast.LENGTH_SHORT).show();
                             Log.i("NetworkMapper", "Data Completed. Directory: " + result);
-
-                            // Everything is finished: download and unzipping, check & display
-                            //isBinaryHere(nmapbin);
                         }
 
 
@@ -328,8 +333,9 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                     mWakeLock.release();
                 }
             };
-            Log.i("NetworkMapper", "Executing using: " + mainActivity.NMAP_DOWNLOAD_URL + "/" + datafn);
-            dataTask.execute(mainActivity.NMAP_DOWNLOAD_URL + "/" + datafn, datadldir + "/" + datafn, prefixfn, datadldir);
+            String dataURL = mainActivity.NMAP_DOWNLOAD_URL + "/v" + major + "." + minor + "/" + datafn;
+            Log.i("NetworkMapper", "Executing using: " + dataURL);
+            dataTask.execute(dataURL, datadldir + "/" + datafn, prefixfn, datadldir);
 
             mainActivity.sharedProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override

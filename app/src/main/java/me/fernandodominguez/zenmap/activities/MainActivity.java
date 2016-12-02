@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String NMAP_BINARY_FILE;
     public String NMAP_DOWNLOAD_URL;
+    public String NMAP_VERSION_URL;
 
     private Scan newScan = null;
     private List<Scan> scans = new ArrayList<>();
@@ -73,13 +74,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
+        NMAP_DOWNLOAD_URL = getResources().getString(R.string.default_update_url);
+        NMAP_VERSION_URL  = getResources().getString(R.string.default_version_url);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         scanProgress = (ProgressBar) findViewById(R.id.scan_progress);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator);
         scanListView = (ListView) findViewById(R.id.scans_list);
         setSupportActionBar(toolbar);
 
-        scans = Scan.all();
+        //scans = Scan.all();
 
         adapter = new ScansListAdapter(this, scans);
         scanListView.setAdapter(adapter);
@@ -306,9 +310,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void downloadAll () {
         currentEabi = 0;
-        NMAP_DOWNLOAD_URL = getResources().getString(R.string.default_update_url);
         final SimpleHttpTask versionTask = new SimpleHttpTask(this);
-        String versionurl = NMAP_DOWNLOAD_URL + "/nmap-latest.txt";
+        String versionurl = NMAP_VERSION_URL + "/nmap-latest.txt";
         versionTask.execute(versionurl);
 
         sharedProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
