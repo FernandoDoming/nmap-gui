@@ -14,12 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.activeandroid.query.Select;
-
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.HostPagerAdapter;
 import me.fernandodominguez.zenmap.constants.Extras;
-import me.fernandodominguez.zenmap.models.Scan;
 import me.fernandodominguez.zenmap.models.network.Host;
 
 public class HostDetailActivity extends AppCompatActivity {
@@ -51,8 +48,7 @@ public class HostDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_detail);
 
-        long host_id = getIntent().getLongExtra(Extras.HOST_ID_EXTRA, 0);
-        Host host = (Host) new Select().from(Host.class).where("id = ?", host_id).execute().get(0);
+        Host host = (Host) getIntent().getSerializableExtra(Extras.HOST_EXTRA);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

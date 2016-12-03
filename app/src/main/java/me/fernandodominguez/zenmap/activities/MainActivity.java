@@ -32,11 +32,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.ScansListAdapter;
@@ -83,25 +80,17 @@ public class MainActivity extends AppCompatActivity {
         scanListView = (ListView) findViewById(R.id.scans_list);
         setSupportActionBar(toolbar);
 
-        //scans = Scan.all();
-
         adapter = new ScansListAdapter(this, scans);
         scanListView.setAdapter(adapter);
         scanListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, ScanDetailActivity.class);
-                intent.putExtra(Extras.SCAN_ID_EXTRA, scans.get(position).getId());
+                intent.putExtra(Extras.SCAN_EXTRA, scans.get(position));
                 context.startActivity(intent);
             }
         });
-        scanListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                onListItemSelect(position, view);
-                return true;
-            }
-        });
+
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         NMAP_BINARY_FILE = getFilesDir().getParent() + "/bin/nmap";

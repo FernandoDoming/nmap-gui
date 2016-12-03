@@ -13,19 +13,11 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Set;
-
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
 import me.fernandodominguez.zenmap.constants.Version;
-import me.fernandodominguez.zenmap.helpers.DateHelper;
-import me.fernandodominguez.zenmap.models.ScanResult;
-import me.fernandodominguez.zenmap.models.host.HostScan;
 import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
-import me.fernandodominguez.zenmap.models.network.NetworkScan;
 
 /**
  * A placeholder fragment containing a simple view.

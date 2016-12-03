@@ -5,8 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import me.fernandodominguez.zenmap.fragments.HostDetailFragment;
-import me.fernandodominguez.zenmap.fragments.ScanDetailFragment;
-import me.fernandodominguez.zenmap.models.ScanResult;
 import me.fernandodominguez.zenmap.models.network.Host;
 
 /**

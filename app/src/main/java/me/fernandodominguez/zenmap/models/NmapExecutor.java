@@ -75,9 +75,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
             if (scanResult != null) {
                 scanResult.setName(scan.getName());
                 scanResult.setOutput(output);
-                scanResult.setScan(scan);
                 scan.setScanResult(scanResult);
-                scan.saveWithChildren();
             }
 
         } catch (NoSuchMethodException | SecurityException e) {

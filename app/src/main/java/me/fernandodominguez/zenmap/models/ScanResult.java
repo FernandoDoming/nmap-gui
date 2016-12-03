@@ -1,9 +1,5 @@
 package me.fernandodominguez.zenmap.models;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,50 +8,22 @@ import me.fernandodominguez.zenmap.models.network.Host;
 /**
  * Created by fernando on 30/12/15.
  */
-@Table(name = "ScanResults")
-public abstract class ScanResult extends Model implements IScanResult, Serializable {
+public abstract class ScanResult implements IScanResult, Serializable {
 
-    @Column(name = "Name")
     protected String name;
-
-    @Column(name = "Target")
     protected String target;
-
-    @Column(name = "StartTime")
     protected long startTime;
-
-    @Column(name = "EndTime")
     protected long endTime;
-
-    @Column(name = "Elapsed")
     protected float elapsed;
-
-    @Column(name = "ScanStatus")
     protected String scanStatus;
-
-    @Column(name = "Output")
     protected String output;
-
-    @Column(name = "Summary")
     protected String summary;
-
-    // belongs to a Scan
-    @Column(name = "Scan", onDelete = Column.ForeignKeyAction.CASCADE)
-    protected Scan scan;
-
-    /* Constructors */
-
-    public ScanResult() {
-        super();
-    }
 
     /* Public methods */
 
     public String getTitle(){
         return getName();
     }
-
-    public abstract ScanResult populate();
 
     public abstract List<Host> getHosts();
 
@@ -111,14 +79,6 @@ public abstract class ScanResult extends Model implements IScanResult, Serializa
 
     public void setTarget(String target) {
         this.target = target;
-    }
-
-    public Scan getScan() {
-        return scan;
-    }
-
-    public void setScan(Scan scan) {
-        this.scan = scan;
     }
 
     public void setSummary(String summary) {

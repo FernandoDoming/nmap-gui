@@ -7,9 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
-import me.fernandodominguez.zenmap.models.network.HostStatus;
 import me.fernandodominguez.zenmap.models.network.NetworkScan;
 
 /**

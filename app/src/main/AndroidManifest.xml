@@ -7,30 +7,22 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <meta-data
-        android:name="AA_MODELS"
-        android:value="me.fernandodominguez.zenmap.models.ScanResult,             me.fernandodominguez.zenmap.models.network.*,             me.fernandodominguez.zenmap.models.host.*" />
-    <meta-data
-        android:name="AA_DB_VERSION"
-        android:value="2" />
-
     <application
-        android:name="com.activeandroid.app.Application"
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.ScanDetailActivity"
             android:label="@string/title_activity_scan_detail"
@@ -40,6 +32,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="me.fernandodominguez.zenmap.activities.MainActivity" />
         </activity>
+
         <activity
             android:name=".activities.HostDetailActivity"
             android:label="@string/title_activity_host_detail"
@@ -48,6 +41,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="me.fernandodominguez.zenmap.activities.MainActivity" />
         </activity>
+
     </application>
 
 </manifest>

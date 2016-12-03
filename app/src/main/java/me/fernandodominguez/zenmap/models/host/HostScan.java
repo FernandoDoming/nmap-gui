@@ -1,9 +1,5 @@
 package me.fernandodominguez.zenmap.models.host;
 
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-import com.activeandroid.query.Select;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,18 +10,14 @@ import me.fernandodominguez.zenmap.models.network.Host;
  * Created by fernando on 30/12/15.
  */
 
-@Table(name = "HostScans")
 public class HostScan extends ScanResult {
 
-    @Column(name = "Host")
     private Host host;
 
     public HostScan() {
-        super();
     }
 
     public HostScan(Host host) {
-        super();
         this.host = host;
     }
 
@@ -43,22 +35,9 @@ public class HostScan extends ScanResult {
     }
 
     @Override
-    public void saveWithChildren() {
-        this.save();
-        host.hostScan = this;
-        host.saveWithChildren();
-    }
-
-    @Override
-    public ScanResult populate() {
-        this.host = getHost();
-        return this;
-    }
-
-    @Override
     public List<Host> getHosts() {
         List<Host> hosts = new ArrayList<>();
-        hosts.add(this.getHost());
+        hosts.add(host);
         return hosts;
     }
 
@@ -67,18 +46,7 @@ public class HostScan extends ScanResult {
         return host.getTarget();
     }
 
-    public static List<HostScan> all() {
-        List<HostScan> scans = new Select().all().from(HostScan.class).execute();
-        return scans;
-    }
-
-    public Host getHost() {
-        if (host == null) {
-            host = getMany(Host.class, "HostScan").get(0);
-            host.getStatus();
-        }
-        return host;
-    }
+    public Host getHost() { return host; }
 
     public void setHost(Host host) {
         this.host = host;

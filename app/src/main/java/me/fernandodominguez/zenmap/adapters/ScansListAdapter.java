@@ -108,8 +108,6 @@ public class ScansListAdapter extends BaseAdapter {
     }
 
     public void delete(Scan toDelete) {
-        // Delete database record
-        toDelete.delete();
         // Delete from ListView
         scans.remove(toDelete);
         notifyDataSetChanged();

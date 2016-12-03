@@ -15,13 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
-import com.activeandroid.query.Select;
-
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.SectionsPagerAdapter;
 import me.fernandodominguez.zenmap.constants.Extras;
 import me.fernandodominguez.zenmap.models.Scan;
-import me.fernandodominguez.zenmap.models.network.NetworkScan;
 
 public class ScanDetailActivity extends AppCompatActivity {
 
@@ -52,8 +49,7 @@ public class ScanDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_detail);
 
-        long scanId = getIntent().getLongExtra(Extras.SCAN_ID_EXTRA, 0);
-        final Scan scan = (Scan) new Select().from(Scan.class).where("id = ?", scanId).execute().get(0);
+        scan = (Scan) getIntent().getSerializableExtra(Extras.SCAN_EXTRA);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -79,8 +75,8 @@ public class ScanDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scan.getScanResult().getScan().run(context, NMAP_BINARY_FILE);
-                startRefreshingAnimation();
+            scan.run(context, NMAP_BINARY_FILE);
+            startRefreshingAnimation();
             }
         });
 
