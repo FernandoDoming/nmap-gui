@@ -42,6 +42,15 @@
                 android:value="me.fernandodominguez.zenmap.activities.MainActivity" />
         </activity>
 
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.fernandodominguez.zenmap.activities.MainActivity" />
+        </activity>
+
     </application>
 
 </manifest>

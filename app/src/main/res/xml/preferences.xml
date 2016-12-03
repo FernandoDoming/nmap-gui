@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <EditTextPreference
-        android:title="Preferred Nmap version"
-        android:key="nmap_version" />
+        android:title="@string/nmap_version_preference"
+        android:key="nmap_version"
+        android:summary="@string/nmap_version_summary"/>
+
+    <SwitchPreference
+        android:title="@string/scan_lan_at_startup_preference"
+        android:key="scan_lan_at_startup"
+        android:summary="@string/scan_lan_at_startup_summary"
+        android:defaultValue="false" />
 </PreferenceScreen>

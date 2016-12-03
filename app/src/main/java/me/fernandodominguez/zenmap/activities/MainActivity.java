@@ -12,12 +12,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
-import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -153,29 +151,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /* Private methods */
-
-    private void onListItemSelect(int position, View view) {
-        adapter.toggleSelection(position);
-        boolean hasSelectedElements = adapter.getSelectedCount() > 0;
-
-        if (hasSelectedElements && actionMode == null) {
-            // Has selected items but action mode is not initiated
-            actionMode = startActionMode(new ActionModeCallback());
-            actionMode.setTitle(adapter.getSelectedCount() + " items selected");
-        } else if (!hasSelectedElements && actionMode != null) {
-            // Action mode is initiated but there are no selected items
-            actionMode.finish();
-        }  else if (hasSelectedElements && actionMode != null) {
-            // Has selected items and action mode is initiated
-            actionMode.setTitle(adapter.getSelectedCount() + " items selected");
-        }
-
-        if (adapter.getSelectedIds().get(position)) {
-            view.setBackgroundColor(ContextCompat.getColor(context, R.color.light_grey));
-        } else {
-            view.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
-        }
-    }
 
     private void newScan() {
 
@@ -337,79 +312,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Handle action bar item clicks here.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(context, SettingsActivity.class);
+            context.startActivity(intent);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /** ActionModeCallback inner class **/
-
-    public class ActionModeCallback implements ActionMode.Callback {
-
-        private int statusBarColor;
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate(R.menu.context_menu, menu);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                statusBarColor = getWindow().getStatusBarColor();
-                getWindow().setStatusBarColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-            }
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return true;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.menu_delete:
-                    SparseBooleanArray selected = adapter.getSelectedIds();
-                    for (int i = (selected.size() - 1); i >= 0; i--) {
-                        Scan toDelete = adapter.getItem(selected.keyAt(i));
-                        adapter.delete(toDelete);
-                    }
-                    showUndoDelete();
-                    mode.finish();
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().setStatusBarColor(statusBarColor);
-            }
-            adapter.removeSelection();
-            actionMode = null;
-        }
-
-        private void showUndoDelete() {
-            Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, getString(R.string.scan_deleted), Snackbar.LENGTH_LONG)
-                    .setAction( getString(R.string.undo), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Snackbar snackbar1 = Snackbar.make(coordinatorLayout, "Feature not implemented, sorry :(", Snackbar.LENGTH_SHORT);
-                            snackbar1.show();
-                        }
-                    });
-
-            snackbar.show();
-        }
     }
 }

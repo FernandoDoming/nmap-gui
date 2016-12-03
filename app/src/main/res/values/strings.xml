@@ -91,6 +91,22 @@
     <!-- Misc options -->
     <string name="xml_opt">-oX -</string>
 
+    <!-- Activities -->
+    <string name="settings_activity_title">Settings</string>
+
+    <!-- Preferences -->
+    <string name="nmap_version_preference">Nmap version</string>
+    <string name="nmap_version_summary">
+        If you fill a nmap version here it will be used instead of
+        the lastest available version.\n
+        Input it as <b>nmap-X.XX</b>
+    </string>
+    <string name="scan_lan_at_startup_preference">Scan LAN at startup</string>
+    <string name="scan_lan_at_startup_summary">
+        Enabling this option will launch a scan for the LAN you are connected to
+        each time the application opens.
+    </string>
+
     <!-- Misc -->
 
     <string name="title_activity_scan_detail">ScanDetailActivity</string>
