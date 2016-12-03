@@ -57,7 +57,8 @@ public class ScanDetailActivity extends AppCompatActivity {
         toolbar.setTitle(scan.getScanResult().getTitle());
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), scan.getScanResult());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),
+                                                         scan.getScanResult());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);

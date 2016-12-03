@@ -118,6 +118,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+
+        View empty = findViewById(R.id.empty);
+        ListView list = (ListView) findViewById(R.id.scans_list);
+        list.setEmptyView(empty);
+    }
+
     public ScansListAdapter getAdapter() {
         return adapter;
     }

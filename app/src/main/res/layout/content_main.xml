@@ -25,6 +25,25 @@
         android:id="@+id/scans_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
     </ListView>
+
+    <RelativeLayout
+        android:id="@+id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:padding="40dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/no_scans_notice"
+            android:text="@string/no_scan_notice"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.2"
+            />
+
+    </RelativeLayout>
+
 </RelativeLayout>

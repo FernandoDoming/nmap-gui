@@ -101,6 +101,11 @@
     <string name="menu_delete">Delete</string>
     <string name="scan_name">Name</string>
     <string name="run_alert">Scan is running</string>
+    <string name="no_scan_notice">
+        There are currently <b>no</b> finished scans.\n
+        To start a new scan hit the <b>+</b> button on the lower right.\n
+        When a scan finishes it will be shown here.
+    </string>
 
     <string name="dlg_ask2download">
         Nmap binary not found.
