@@ -200,13 +200,14 @@ public class MainActivity extends AppCompatActivity {
         MaterialDialog dialog = newBaseScan(R.string.network_scan_title, R.layout.new_network_scan_dialog);
         View view = dialog.getCustomView();
         EditText target = (EditText) view.findViewById(R.id.input_target);
-        target.setText(NetworkHelper.getNetworkAddress());
-        //target.setFocusable(false);
+        if (target != null) {
+            target.setText(NetworkHelper.getNetworkAddress());
+        }
         dialog.show();
     }
 
     private MaterialDialog newBaseScan(int titleRes, int layoutRes) {
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
+        return new MaterialDialog.Builder(this)
                 .title(titleRes)
                 .customView(layoutRes , true)
                 .positiveText(R.string.done)
@@ -229,8 +230,6 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .cancelable(false)
                 .build();
-
-        return dialog;
     }
 
     private void showRunAlert(String msg) {
@@ -239,11 +238,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Scan configureScanFromDialog(MaterialDialog dialog, Scan scan) {
         View view = dialog.getCustomView();
-        EditText nameEditText = (EditText) view.findViewById(R.id.input_name);
         EditText targetEditText = (EditText) view.findViewById(R.id.input_target);
         Spinner  intensitySpinner = (Spinner) view.findViewById(R.id.intensity_spinner);
 
-        scan.setName(nameEditText.getText().toString());
         String intensity = ScanHelper.intensityKeyFromValue(this, intensitySpinner.getSelectedItem().toString());
         scan.setIntensity(intensity);
 

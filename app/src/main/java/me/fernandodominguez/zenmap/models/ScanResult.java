@@ -22,7 +22,11 @@ public abstract class ScanResult implements IScanResult, Serializable {
     /* Public methods */
 
     public String getTitle(){
-        return getName();
+        if (getName() == null) {
+            return getTarget();
+        } else {
+            return getName();
+        }
     }
 
     public abstract List<Host> getHosts();
