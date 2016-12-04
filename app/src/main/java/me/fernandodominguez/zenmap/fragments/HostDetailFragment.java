@@ -61,12 +61,13 @@ public class HostDetailFragment extends Fragment {
             case GENERAL_SECTION_NUMBER:
                 rootView = inflater.inflate(R.layout.scan_general_results_layout, container, false);
                 ListView resultsListView = (ListView) rootView.findViewById(R.id.general_result_listview);
-                GeneralResultsListAdapter<Service> adapter = new GeneralResultsListAdapter<>(getActivity(), host.getServices());
+                GeneralResultsListAdapter<Service> adapter =
+                        new GeneralResultsListAdapter<>(getActivity(), host.getServices());
                 resultsListView.setAdapter(adapter);
 
                 View header = inflater.inflate(R.layout.host_general_properties, container, false);
                 fillHeader(header, host);
-                resultsListView.addHeaderView(header);
+                resultsListView.addHeaderView(header, null, false);
 
                 resultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override

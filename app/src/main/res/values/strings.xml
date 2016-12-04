@@ -93,6 +93,7 @@
 
     <!-- Activities -->
     <string name="settings_activity_title">Settings</string>
+    <string name="title_activity_scan_detail">ScanDetailActivity</string>
 
     <!-- Preferences -->
     <string name="nmap_version_preference">Nmap version</string>
@@ -107,9 +108,30 @@
         each time the application opens.
     </string>
 
+    <!-- Dialogs -->
+
+    <string name="dlg_ask2download">
+        Nmap binary not found.
+        This is required for this application to work.
+        Would you like to download it?
+    </string>
+    <string name="dlg_ask2download_yes">Download</string>
+    <string name="dlg_ask2download_no">Cancel and exit</string>
+    <string name="dlg_progress_title_download">Download binaries</string>
+    <string name="toast_dowload_binary_error">Binary download failed</string>
+    <string name="toast_download_binary_ok">Binary download succeded</string>
+    <string name="dlg_ask2downloaddata">Additional data will be downloaded to enable additional features. Would you like to proceed?</string>
+    <string name="dlg_ask2deletedata">Would you like to delete the downloaded data?</string>
+    <string name="dlg_ask2delete_yes">Yes</string>
+    <string name="dlg_ask2delete_no">No</string>
+    <string name="toast_data_extraction_ok">Binary extraction successful</string>
+    <string name="info_binary_ok">Binary is all set</string>
+    <string name="info_binary_not_ok">Binary is erroneous.</string>
+    <string name="dlg_progress_title_extraction">Extracting</string>
+
     <!-- Misc -->
 
-    <string name="title_activity_scan_detail">ScanDetailActivity</string>
+    <string name="discover">Discover</string>
     <string name="target_title">Target</string>
     <string name="start_time_title">Start time</string>
     <string name="end_time_title">End time</string>
@@ -123,27 +145,9 @@
         When a scan finishes it will be shown here.
     </string>
 
-    <string name="dlg_ask2download">
-        Nmap binary not found.
-        This is required for this application to work.
-        Would you like to download it?
-    </string>
-    <string name="dlg_ask2download_yes">Download</string>
-    <string name="dlg_ask2download_no">Cancel and exit</string>
     <string name="default_version_url">https://s3.amazonaws.com/nmap-dl/nmap-android-ui</string>
     <string name="default_update_url">https://github.com/kost/nmap-android/releases/download</string>
-    <string name="dlg_progress_title_download">Download binaries</string>
-    <string name="toast_dowload_binary_error">Binary download failed</string>
-    <string name="toast_download_binary_ok">Binary download succeded</string>
     <string name="nmapbin_version">nmap</string>
-    <string name="dlg_ask2downloaddata">Additional data will be downloaded to enable additional features. Would you like to proceed?</string>
-    <string name="dlg_ask2deletedata">Would you like to delete the downloaded data?</string>
-    <string name="dlg_ask2delete_yes">Yes</string>
-    <string name="dlg_ask2delete_no">No</string>
-    <string name="toast_data_extraction_ok">Binary extraction successful</string>
-    <string name="info_binary_ok">Binary is all set</string>
-    <string name="info_binary_not_ok">Binary is erroneous.</string>
-    <string name="dlg_progress_title_extraction">Extracting</string>
     <string name="nmap_binary_path">NMAP_BINARY_PATH</string>
     <string name="summary_title">Summary</string>
     <string name="os">Operative system</string>

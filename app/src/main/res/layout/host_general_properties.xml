@@ -24,13 +24,14 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/host_mac_title"
             android:text="@string/mac"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,20 +39,22 @@
 
         <TextView
             android:id="@+id/host_mac"
+            android:layout_below="@id/host_mac_title"
             android:text="@string/unknown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/PropertyValue"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/host_mac_vendor_title"
             android:text="@string/mac_vendor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,20 +62,22 @@
 
         <TextView
             android:id="@+id/host_mac_vendor"
+            android:layout_below="@id/host_mac_vendor_title"
             android:text="@string/unknown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/PropertyValue"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/host_os_title"
             android:text="@string/os"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,11 +85,12 @@
 
         <TextView
             android:id="@+id/host_os"
+            android:layout_below="@id/host_os_title"
             android:text="@string/unknown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/PropertyValue"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
