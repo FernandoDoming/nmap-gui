@@ -12,15 +12,6 @@
     tools:context=".activities.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <ProgressBar
-        android:id="@+id/scan_progress"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progressDrawable="@drawable/progressbar"
-        android:progress="0"
-        />
-
     <ListView
         android:id="@+id/scans_list"
         android:layout_width="match_parent"

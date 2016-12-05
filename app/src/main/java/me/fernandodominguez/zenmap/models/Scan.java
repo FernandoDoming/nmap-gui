@@ -27,6 +27,14 @@ public class Scan implements Serializable {
         new NmapExecutor(context, binary).execute(this);
     }
 
+    public String getTitle() {
+        if (getName() == null ) {
+            return getTarget();
+        } else {
+            return getName();
+        }
+    }
+
     /* Getters & setters */
 
     public String getName() {

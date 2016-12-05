@@ -17,9 +17,9 @@ import java.util.zip.ZipInputStream;
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.helpers.FileHelper;
 
-/**
- * Created by fernando on 01/02/16.
- */
+/*
+* Attribution of this file is mainly to kost @ github
+* */
 
 public class UnzipTask extends AsyncTask<String,Integer,String> {
     private final Context context;

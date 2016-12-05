@@ -15,9 +15,9 @@ import java.net.URL;
 
 import me.fernandodominguez.zenmap.R;
 
-/**
- * Created by Fernando Domínguez on 01/02/16.
- */
+/*
+* Attribution of this file is mainly to kost @ github
+* */
 
 public class DownloadTask extends AsyncTask<String,Integer,String> {
     public final Context context;
@@ -38,9 +38,9 @@ public class DownloadTask extends AsyncTask<String,Integer,String> {
         OutputStream output = null;
         HttpURLConnection connection = null;
         try {
-            dlurl=sParm[0];
-            dlfn=sParm[1];
-            dlprefix=sParm[2];
+            dlurl    = sParm[0];
+            dlfn     = sParm[1];
+            dlprefix = sParm[2];
             URL url = new URL(sParm[0]);
             Log.i("NetworkMapper", "Downloading URL: " + url.toString());
             connection = (HttpURLConnection) url.openConnection();
@@ -59,7 +59,6 @@ public class DownloadTask extends AsyncTask<String,Integer,String> {
 
             // download the file
             input = connection.getInputStream();
-            // output = new FileOutputStream("/sdcard/file_name.extension");
             Log.i("NetworkMapper","Downloading to: "+sParm[1]);
             output = new FileOutputStream(sParm[1]);
 
@@ -87,8 +86,7 @@ public class DownloadTask extends AsyncTask<String,Integer,String> {
                     output.close();
                 if (input != null)
                     input.close();
-            } catch (IOException ignored) {
-            }
+            } catch (IOException ignored) {}
 
             if (connection != null)
                 connection.disconnect();

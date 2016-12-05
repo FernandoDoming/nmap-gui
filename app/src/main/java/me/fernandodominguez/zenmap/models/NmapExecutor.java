@@ -12,9 +12,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,7 +30,7 @@ import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
 public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
 
     private Context context;
-    public PowerManager.WakeLock mWakeLock;
+    private PowerManager.WakeLock mWakeLock;
 
     private Nmap nmap;
     private Scan scan;
@@ -89,7 +87,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
             Log.e(this.getClass().getName(), "Illegal access made: " + scan.getIntensity()
                     + " in " + nmap );
             e.printStackTrace();
-        } catch (XmlPullParserException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -107,23 +105,32 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
 
         if (context instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) context;
-            mainActivity.getAdapter().addScan(scan);
             ProgressBar scanProgress = (ProgressBar) mainActivity.findViewById(R.id.scan_progress);
             scanProgress.setIndeterminate(false);
 
-            Snackbar snackbar = Snackbar
-                    .make( mainActivity.coordinatorLayout,
-                            context.getString(R.string.scan_done, scan.getName()),
-                            Snackbar.LENGTH_LONG)
-                    .setAction( context.getString(R.string.view), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(context, ScanDetailActivity.class);
-                            intent.putExtra("scan", scan);
-                            context.startActivity(intent);
-                        }
-                    });
-            snackbar.show();
+            if (scan.getScanResult() == null) {
+                Snackbar snackbar = Snackbar
+                        .make(mainActivity.coordinatorLayout,
+                              context.getString(R.string.scan_failed),
+                              Snackbar.LENGTH_LONG);
+                snackbar.show();
+            } else {
+                mainActivity.getAdapter().addScan(scan);
+
+                Snackbar snackbar = Snackbar
+                        .make(mainActivity.coordinatorLayout,
+                                context.getString(R.string.scan_done, scan.getTitle()),
+                                Snackbar.LENGTH_LONG)
+                        .setAction(context.getString(R.string.view), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(context, ScanDetailActivity.class);
+                                intent.putExtra("scan", scan);
+                                context.startActivity(intent);
+                            }
+                        });
+                snackbar.show();
+            }
 
         } else if (context instanceof ScanDetailActivity) {
             Activity activity = (Activity) context;

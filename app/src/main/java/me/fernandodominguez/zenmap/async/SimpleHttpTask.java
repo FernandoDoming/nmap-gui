@@ -28,7 +28,7 @@ import me.fernandodominguez.zenmap.activities.MainActivity;
 import me.fernandodominguez.zenmap.helpers.FileHelper;
 
 /*
-* Attributtion of this file is mainly to kost @ github
+* Attribution of this file is mainly to kost @ github
 * */
 
 public class SimpleHttpTask extends AsyncTask<String, Void, String> {
@@ -254,8 +254,10 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
     }
 
     private void downloadData(final String prefixfn) {
-        String root = Environment.getExternalStorageDirectory().toString();
-        final String datadldir = root + "/opt";
+        String appdir = context.getFilesDir().getParent();
+        final String datadldir = appdir + "/dl";
+        final String datadir = appdir + "/data/";
+        final String bindir  = appdir + "/bin/";
 
         // Parse version number. Group 0 is major, group 1 is minor
         Pattern p = Pattern.compile("nmap-(\\d+)\\.(\\d+)");
@@ -266,8 +268,8 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
             return;
         }
 
-        String major = m.group(1);
-        String minor = m.group(2);
+        final String major = m.group(1);
+        final String minor = m.group(2);
 
         Log.i("NetworkMapper", "Using datadldir: " + datadldir);
         FileHelper.makedir(datadldir);
@@ -285,11 +287,12 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                         return;
                     }
 
-                    String datadir = Environment.getExternalStorageDirectory().toString() + "/opt/";
                     final UnzipTask datazipTask = new UnzipTask(this.context, mainActivity.sharedProgressDialog) {
                         @Override
                         protected void onPostExecute(String result) {
-                            SharedPreferences sharedPref = context.getSharedPreferences(context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
+                            SharedPreferences sharedPref =
+                                    context.getSharedPreferences(context.getPackageName() + "_preferences",
+                                                                 Context.MODE_PRIVATE);
                             final String oldver = sharedPref.getString(context.getString(R.string.nmapbin_version), "");
 
                             if (!oldver.equals("") && !oldver.equals(prefixfn)) {
@@ -313,6 +316,19 @@ public class SimpleHttpTask extends AsyncTask<String, Void, String> {
                                         .show();
                             } else {
                                 Log.i("NetworkMapper", "No need to delete recursively!");
+                            }
+                            // Move the support files to the bin dir
+                            // /nmap-x.yy/share/nmap/
+                            String support = datadir + "/nmap-" + major + "." + minor +
+                                             "/share/nmap/";
+                            File supportDir = new File(support);
+                            if (supportDir.isDirectory()) {
+                                File[] content = supportDir.listFiles();
+                                for (File f : content) {
+                                    if (!f.renameTo( new File(bindir + f.getName()) )) {
+                                        Log.e("SimpleHTTPTask", "Moving " + f.getName() + " failed");
+                                    }
+                                }
                             }
                             mainActivity.sharedProgressDialog.dismiss();
                             Toast.makeText(context, context.getString(R.string.toast_data_extraction_ok), Toast.LENGTH_SHORT).show();

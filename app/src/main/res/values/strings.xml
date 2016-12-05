@@ -129,6 +129,11 @@
     <string name="info_binary_not_ok">Binary is erroneous.</string>
     <string name="dlg_progress_title_extraction">Extracting</string>
 
+    <!-- Scan results -->
+    <string name="scan_done">Scan %1$s has finished</string>
+    <string name="scan_failed">The scan failed. If this problem persists please create an issue on the Github repo.</string>
+    <string name="scan_deleted">Scan has been deleted</string>
+
     <!-- Misc -->
 
     <string name="discover">Discover</string>
@@ -153,9 +158,7 @@
     <string name="os">Operative system</string>
     <string name="mac">MAC address</string>
     <string name="mac_vendor">NIC manufacturer</string>
-    <string name="scan_deleted">Scan has been deleted</string>
     <string name="undo">UNDO</string>
-    <string name="scan_done">Scan %1$s has finished</string>
     <string name="view">VIEW</string>
     <string name="dismiss">dismiss</string>
     <string name="port">Port</string>
