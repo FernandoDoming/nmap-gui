@@ -18,7 +18,26 @@ public class Scan implements Serializable {
     /* Constructors */
 
     public Scan() {
-        super();
+    }
+
+    public Scan(String target) {
+        this.target = target;
+    }
+
+    public Scan(String target, String intensity) {
+        this.target = target;
+        this.intensity = intensity;
+    }
+
+    public Scan(String target, int type) {
+        this.type = type;
+        this.target = target;
+    }
+
+    public Scan(String target, int type, String intensity) {
+        this.type = type;
+        this.target = target;
+        this.intensity = intensity;
     }
 
     /* Public methods */

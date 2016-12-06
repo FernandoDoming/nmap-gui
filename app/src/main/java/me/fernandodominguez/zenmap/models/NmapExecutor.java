@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -18,9 +19,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import me.fernandodominguez.zenmap.R;
+import me.fernandodominguez.zenmap.activities.HostDetailActivity;
 import me.fernandodominguez.zenmap.activities.MainActivity;
 import me.fernandodominguez.zenmap.activities.ScanDetailActivity;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
+import me.fernandodominguez.zenmap.models.host.HostScan;
+import me.fernandodominguez.zenmap.models.network.Host;
 import me.fernandodominguez.zenmap.parsers.HostScanParser;
 import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
 
@@ -55,6 +59,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
         String output = null;
         ScanResult scanResult = null;
         Log.i(this.getClass().getName(), "Starting scan for " + scan.getTarget());
+        Log.i(this.getClass().getName(), "Scan intensity: "   + scan.getIntensity());
 
         try {
             Method method = nmap.getClass().getMethod(scan.getIntensity(), String.class);
@@ -69,11 +74,16 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
             } else if (scan.getType() == ScanTypes.NETWORK_SCAN) {
                 scanResult = new NetworkScanParser().parse(parser);
                 scanResult.setTarget(scan.getTarget());
+            } else {
+                Log.e(this.getClass().getName(), "Scan is neither HOST nor NETWORK. Scan will fail.");
             }
+
             if (scanResult != null) {
                 scanResult.setName(scan.getName());
                 scanResult.setOutput(output);
                 scan.setScanResult(scanResult);
+            } else {
+                Log.w(this.getClass().getName(), "Scan " + scan.getTitle() + " result was null");
             }
 
         } catch (NoSuchMethodException | SecurityException e) {
@@ -133,9 +143,27 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
             }
 
         } else if (context instanceof ScanDetailActivity) {
+
             Activity activity = (Activity) context;
             activity.finish();
             activity.startActivity(activity.getIntent());
+
+        } else if (context instanceof HostDetailActivity) {
+
+            HostDetailActivity activity = (HostDetailActivity) context;
+            if (scan.getScanResult() != null) {
+                HostScan result = (HostScan) scan.getScanResult();
+                if (result.getHost() != null) {
+                    Host host = result.getHost();
+                    activity.addHostDetails(
+                        (ViewGroup) activity.findViewById(R.id.host_general_properties), host
+                    );
+                }
+            }
+            ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.scan_progress);
+            if (progressBar != null) {
+                progressBar.setIndeterminate(false);
+            }
         }
 
         Log.i(this.getClass().getName(), "Scan finished for " + scan.getTarget());

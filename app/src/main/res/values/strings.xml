@@ -133,6 +133,7 @@
     <string name="scan_done">Scan %1$s has finished</string>
     <string name="scan_failed">The scan failed. If this problem persists please create an issue on the Github repo.</string>
     <string name="scan_deleted">Scan has been deleted</string>
+    <string name="scan_details">Scanning for details</string>
 
     <!-- Misc -->
 

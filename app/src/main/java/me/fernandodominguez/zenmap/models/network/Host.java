@@ -1,6 +1,7 @@
 package me.fernandodominguez.zenmap.models.network;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import me.fernandodominguez.zenmap.models.host.Service;
@@ -17,6 +18,8 @@ public class Host implements Serializable {
     private String mac;
     private String macVendor;
     private HostStatus status;
+
+    public static List<String> HOST_DETAILS = Arrays.asList("os", "mac", "mac_vendor");
 
     public Host() {
     }

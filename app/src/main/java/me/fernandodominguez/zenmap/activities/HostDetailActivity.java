@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -14,10 +15,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.HostPagerAdapter;
 import me.fernandodominguez.zenmap.constants.Extras;
+import me.fernandodominguez.zenmap.constants.ScanTypes;
+import me.fernandodominguez.zenmap.helpers.StringHelper;
+import me.fernandodominguez.zenmap.models.NmapExecutor;
+import me.fernandodominguez.zenmap.models.Scan;
 import me.fernandodominguez.zenmap.models.network.Host;
 
 public class HostDetailActivity extends AppCompatActivity {
@@ -49,7 +60,7 @@ public class HostDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_detail);
 
-        Host host = (Host) getIntent().getSerializableExtra(Extras.HOST_EXTRA);
+        host = (Host) getIntent().getSerializableExtra(Extras.HOST_EXTRA);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -104,6 +115,58 @@ public class HostDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void addHostDetails(ViewGroup viewGroup, Host host) {
+
+        for (String detail : Host.HOST_DETAILS) {
+            try {
+                Method method = host.getClass().getMethod("get" + StringHelper.toCamelCase(detail));
+                String data   = (String) method.invoke(host);
+
+                if (data != null) {
+                    int butResId = getResources().getIdentifier(
+                            "host_" + detail + "_discover",
+                            "id",
+                            getPackageName()
+                    );
+                    // Hide the discover button in case data is returned
+                    viewGroup.findViewById(butResId).setVisibility(View.INVISIBLE);
+                    // Set the textview content to that data
+                    int tvResId =
+                            getResources().getIdentifier("host_" + detail, "id",
+                                                         getPackageName());
+                    TextView tv = (TextView) viewGroup.findViewById(tvResId);
+                    tv.setText(data);
+                }
+            } catch (NoSuchMethodException e) {     // No multi-except catch due to min API lvl
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void scanDetail(View view) {
+        scanDetail(view.getTag().toString());
+        Snackbar.make(
+                findViewById(R.id.main_content),
+                getResources().getString(R.string.scan_details),
+                Snackbar.LENGTH_LONG).show();
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.scan_progress);
+        progressBar.setIndeterminate(true);
+    }
+
     /* Private methods */
+
+    private void scanDetail(String detail) {
+        final String target = host.getTarget();
+        Scan scan = new Scan(target, ScanTypes.HOST_SCAN);
+        // TODO: Set intensity accordingly
+        scan.setIntensity(ScanTypes.OS_SCAN);
+
+        NmapExecutor executor = new NmapExecutor(context, NMAP_BINARY_FILE);
+        executor.execute(scan);
+    }
 
 }

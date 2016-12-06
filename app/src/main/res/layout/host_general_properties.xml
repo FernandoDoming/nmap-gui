@@ -53,7 +53,9 @@
             android:layout_alignParentRight="true"
             android:text="@string/discover"
             android:background="@color/transparent"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="@color/colorAccent"
+            android:onClick="scanDetail"
+            android:tag="mac"/>
 
     </RelativeLayout>
 
@@ -86,7 +88,9 @@
             android:layout_alignParentRight="true"
             android:text="@string/discover"
             android:background="@color/transparent"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="@color/colorAccent"
+            android:onClick="scanDetail"
+            android:tag="mac_vendor"/>
 
     </RelativeLayout>
 
@@ -119,7 +123,9 @@
             android:layout_alignParentRight="true"
             android:text="@string/discover"
             android:background="@color/transparent"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="@color/colorAccent"
+            android:onClick="scanDetail"
+            android:tag="os"/>
 
     </RelativeLayout>
 

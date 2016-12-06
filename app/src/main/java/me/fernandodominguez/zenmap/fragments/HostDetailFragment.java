@@ -1,7 +1,9 @@
 package me.fernandodominguez.zenmap.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +15,10 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-
 import me.fernandodominguez.zenmap.R;
+import me.fernandodominguez.zenmap.activities.HostDetailActivity;
 import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
 import me.fernandodominguez.zenmap.constants.Version;
-import me.fernandodominguez.zenmap.helpers.StringHelper;
 import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
 
@@ -40,7 +37,7 @@ public class HostDetailFragment extends Fragment {
     private final static int NETWORK_MAP_SECTION_NUMBER = 2;
     private final static int RAW_SECTION_NUMBER = 3;
 
-    private static List<String> HOST_DETAILS = Arrays.asList("os", "mac", "mac_vendor");
+    private static String NMAP_BINARY_FILE;
 
     public HostDetailFragment() {
     }
@@ -64,6 +61,11 @@ public class HostDetailFragment extends Fragment {
         int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
         final Host host = (Host) getArguments().getSerializable(ARG_SCAN_RESULT);
         View rootView = null;
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        NMAP_BINARY_FILE
+                = sharedPrefs.getString(getString(R.string.nmap_binary_path),
+                                        getContext().getFilesDir().getParent() + "/bin/nmap");
 
         switch (sectionNumber) {
             case GENERAL_SECTION_NUMBER:
@@ -119,39 +121,15 @@ public class HostDetailFragment extends Fragment {
         target.setText(host.getAddress());
 
         ViewGroup viewGroup = (ViewGroup) header;
-        addHostDetails(viewGroup, host);
-    }
+        if (getContext() instanceof HostDetailActivity) {
 
-    private void addHostDetails(ViewGroup viewGroup, Host host) {
-
-        for (String detail : HOST_DETAILS) {
-            try {
-                Method method = host.getClass().getMethod("get" + StringHelper.toCamelCase(detail));
-                String data   = (String) method.invoke(host);
-                if (data != null) {
-                    // Hide the discover button in case data is returned
-                    int butResId =
-                        getResources().getIdentifier("host_" + detail + "_discover", "id",
-                                                     getContext().getPackageName());
-                    viewGroup.findViewById(butResId).setVisibility(View.INVISIBLE);
-                    // Set the textview content to that data
-                    int tvResId =
-                        getResources().getIdentifier("host_" + detail, "id",
-                                getContext().getPackageName());
-                    TextView tv = (TextView) viewGroup.findViewById(tvResId);
-                    tv.setText(data);
-                }
-            } catch (NoSuchMethodException e) {     // No multi-except catch due to min API lvl
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            HostDetailActivity activity = (HostDetailActivity) getContext();
+            activity.addHostDetails(viewGroup, host);
         }
     }
 
     private void addServiceDetails(ViewGroup viewGroup, Service service) {
+        // TODO: Use reflection
         LayoutInflater layoutInflater =
                 (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
