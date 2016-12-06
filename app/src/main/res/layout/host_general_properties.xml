@@ -45,6 +45,16 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/PropertyValue"/>
 
+        <Button
+            android:id="@+id/host_mac_discover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/discover"
+            android:background="@color/transparent"
+            android:textColor="@color/colorAccent"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -68,6 +78,16 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/PropertyValue"/>
 
+        <Button
+            android:id="@+id/host_mac_vendor_discover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/discover"
+            android:background="@color/transparent"
+            android:textColor="@color/colorAccent"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -90,6 +110,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/PropertyValue"/>
+
+        <Button
+            android:id="@+id/host_os_discover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/discover"
+            android:background="@color/transparent"
+            android:textColor="@color/colorAccent"/>
 
     </RelativeLayout>
 

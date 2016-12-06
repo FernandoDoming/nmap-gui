@@ -1,7 +1,7 @@
 package me.fernandodominguez.zenmap.helpers;
 
 /**
- * Created by fernando on 08/02/16.
+ * Coded by fernando on 08/02/16.
  */
 public class StringHelper {
     public static String truncate(String str, int len) {
@@ -10,5 +10,18 @@ public class StringHelper {
         } else {
             return str;
         }
+    }
+
+    public static String capitalize(String str) {
+        return Character.toUpperCase(str.charAt(0)) + str.substring(1);
+    }
+
+    public static String toCamelCase(String str) {
+        String[] parts = str.split("_");
+        String camelCaseString = "";
+        for (String part : parts){
+            camelCaseString += capitalize(part);
+        }
+        return camelCaseString;
     }
 }

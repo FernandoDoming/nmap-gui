@@ -58,7 +58,6 @@ public class HostDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(host.getTitle());
         }
-        // toolbar.setTitle(host.getTitle());
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new HostPagerAdapter(getSupportFragmentManager(), host);

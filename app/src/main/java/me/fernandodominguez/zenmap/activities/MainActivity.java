@@ -16,7 +16,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
     private final Context context = this;
     private int currentEabi;
-    private ActionMode actionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

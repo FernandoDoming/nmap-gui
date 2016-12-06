@@ -13,9 +13,15 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
 import me.fernandodominguez.zenmap.constants.Version;
+import me.fernandodominguez.zenmap.helpers.StringHelper;
 import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
 
@@ -33,6 +39,8 @@ public class HostDetailFragment extends Fragment {
     private final static int GENERAL_SECTION_NUMBER = 1;
     private final static int NETWORK_MAP_SECTION_NUMBER = 2;
     private final static int RAW_SECTION_NUMBER = 3;
+
+    private static List<String> HOST_DETAILS = Arrays.asList("os", "mac", "mac_vendor");
 
     public HostDetailFragment() {
     }
@@ -60,7 +68,8 @@ public class HostDetailFragment extends Fragment {
         switch (sectionNumber) {
             case GENERAL_SECTION_NUMBER:
                 rootView = inflater.inflate(R.layout.scan_general_results_layout, container, false);
-                ListView resultsListView = (ListView) rootView.findViewById(R.id.general_result_listview);
+                ListView resultsListView =
+                        (ListView) rootView.findViewById(R.id.general_result_listview);
                 GeneralResultsListAdapter<Service> adapter =
                         new GeneralResultsListAdapter<>(getActivity(), host.getServices());
                 resultsListView.setAdapter(adapter);
@@ -115,24 +124,36 @@ public class HostDetailFragment extends Fragment {
 
     private void addHostDetails(ViewGroup viewGroup, Host host) {
 
-        if ( host.getOs() != null ) {
-            TextView tv = (TextView) viewGroup.findViewById(R.id.host_os);
-            tv.setText(host.getOs());
-        }
-
-        if ( host.getMac() != null) {
-            TextView tv = (TextView) viewGroup.findViewById(R.id.host_mac);
-            tv.setText(host.getMac());
-        }
-
-        if ( host.getMacVendor() != null) {
-            TextView tv = (TextView) viewGroup.findViewById(R.id.host_mac_vendor);
-            tv.setText(host.getMacVendor());
+        for (String detail : HOST_DETAILS) {
+            try {
+                Method method = host.getClass().getMethod("get" + StringHelper.toCamelCase(detail));
+                String data   = (String) method.invoke(host);
+                if (data != null) {
+                    // Hide the discover button in case data is returned
+                    int butResId =
+                        getResources().getIdentifier("host_" + detail + "_discover", "id",
+                                                     getContext().getPackageName());
+                    viewGroup.findViewById(butResId).setVisibility(View.INVISIBLE);
+                    // Set the textview content to that data
+                    int tvResId =
+                        getResources().getIdentifier("host_" + detail, "id",
+                                getContext().getPackageName());
+                    TextView tv = (TextView) viewGroup.findViewById(tvResId);
+                    tv.setText(data);
+                }
+            } catch (NoSuchMethodException e) {     // No multi-except catch due to min API lvl
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private void addServiceDetails(ViewGroup viewGroup, Service service) {
-        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater =
+                (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (service.getService() != null) {
             View portView = layoutInflater.inflate(R.layout.general_property, null);
