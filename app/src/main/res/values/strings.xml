@@ -135,6 +135,7 @@
     <string name="scan_deleted">Scan has been deleted</string>
     <string name="scan_details">Scanning for details</string>
     <string name="host_down">Host appears to be down</string>
+    <string name="maybe_host_down">Scan failed. Maybe host is down?</string>
 
     <!-- Misc -->
 
@@ -160,6 +161,7 @@
     <string name="nmap_binary_path">NMAP_BINARY_PATH</string>
     <string name="summary_title">Summary</string>
     <string name="os">Operative system</string>
+    <string name="hostname">Host name</string>
     <string name="mac">MAC address</string>
     <string name="mac_vendor">NIC manufacturer</string>
     <string name="undo">UNDO</string>

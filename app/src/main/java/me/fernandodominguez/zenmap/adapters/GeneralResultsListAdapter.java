@@ -58,7 +58,7 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
         T result = elements.get(position);
         if (result instanceof Host) {
             Host host = (Host) result;
-            title.setText(host.getAddress());
+            title.setText(host.getTitle());
             subtitle.setText(
                     context.getString(R.string.host_subtitle, host.getStatus().getState())
             );

@@ -19,7 +19,7 @@ public class Host implements Serializable {
     private String macVendor;
     private HostStatus status;
 
-    public static List<String> HOST_DETAILS = Arrays.asList("os", "mac", "mac_vendor");
+    public static List<String> HOST_DETAILS = Arrays.asList("os", "mac", "mac_vendor", "hostname");
 
     public Host() {
     }
@@ -36,8 +36,8 @@ public class Host implements Serializable {
     }
 
     public String getTitle() {
-        if (hostname  == null && mac == null) return address;
         if (hostname != null) return hostname;
+        if (address  != null) return address;
         return mac;
     }
 

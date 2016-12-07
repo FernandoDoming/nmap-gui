@@ -155,11 +155,14 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
 
             HostDetailActivity activity = (HostDetailActivity) context;
             if (scan.getScanResult() != null) {
+
                 HostScan result = (HostScan) scan.getScanResult();
                 if (result.getHost() != null) {
                     Host host = result.getHost();
 
                     if ( host.getStatus().toString().equals(HostStatus.DOWN) ) {
+                        Log.w(this.getClass().getName(), "Scan for host " + host.getAddress() +
+                                                         ": reported as DOWN");
                         Snackbar.make(activity.findViewById(R.id.main_content),
                                     context.getString(R.string.host_down),
                                     Snackbar.LENGTH_LONG).show();
@@ -169,7 +172,12 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
                         );
                     }
                 }
+
+            } else {
+                Log.w(this.getClass().getName(), "Scan for" + scan.getTarget() +
+                                                 ": got NULL result");
             }
+
             ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.scan_progress);
             if (progressBar != null) {
                 progressBar.setIndeterminate(false);

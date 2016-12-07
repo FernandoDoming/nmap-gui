@@ -7,6 +7,7 @@ import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
 import me.fernandodominguez.zenmap.R;
+import me.fernandodominguez.zenmap.helpers.NetworkHelper;
 
 /**
  * Created by fernando on 28/12/15.
@@ -44,44 +45,48 @@ public class Nmap {
     }
 
     public String osScan(String target) throws IOException, InterruptedException {
-        return executeAsRoot(context.getResources().getString(R.string.os_scan_opts), target);
+        return execute(context.getResources().getString(R.string.os_scan_opts), target, true);
     }
 
     public String osServiceScan(String target) throws IOException, InterruptedException {
-        return executeAsRoot(context.getResources().getString(R.string.os_service_opts), target);
+        return execute(context.getResources().getString(R.string.os_service_opts), target, true);
     }
 
     public String hostExtDiscovery(String target) throws IOException, InterruptedException {
-        return executeAsRoot(context.getResources().getString(R.string.host_discovery_opts), target);
+        return execute(context.getResources().getString(R.string.host_discovery_opts), target, true);
     }
 
     public String hostServiceDiscovery(String target) throws IOException, InterruptedException {
-        return executeAsRoot(context.getResources().getString(R.string.host_service_discovery_opts), target);
+        return execute(context.getResources().getString(R.string.host_service_discovery_opts), target, true);
     }
 
     public String hostOsDiscovery(String target) throws IOException, InterruptedException {
-        return executeAsRoot(context.getResources().getString(R.string.host_os_discovery_opts), target);
+        return execute(context.getResources().getString(R.string.host_os_discovery_opts), target, true);
     }
 
     public String hostOsServiceDiscovery(String target) throws IOException, InterruptedException {
-        return executeAsRoot(context.getResources().getString(R.string.host_os_service_discovery_opts), target);
+        return execute(context.getResources().getString(R.string.host_os_service_discovery_opts), target, true);
     }
 
     private String execute(String options, String target) throws IOException, InterruptedException {
-        String xml = context.getResources().getString(R.string.xml_opt);
-        List<String> lines = Shell.SH.run(binary + " " + options + " " + xml + " " + target);
-
-        String output = "";
-        for (String line : lines) {
-            output += "\n" + line;
-        }
-
-        return output.trim();
+        return execute(options, target, false);
     }
 
-    private String executeAsRoot(String options, String target) throws IOException, InterruptedException {
+    private String execute(String options, String target, boolean root) throws IOException, InterruptedException {
         String xml = context.getResources().getString(R.string.xml_opt);
-        List<String> lines = Shell.SU.run(binary + " " + options + " " + xml + " " + target);
+        String cmd = binary + " " + options + " " + xml + " " + target;
+        // If the target is a private IP add the gateway as a dns server
+        // so rDNS IP resolution can be done
+        if ( NetworkHelper.isPrivateAddress(target.split("/")[0]) ) {
+            cmd += " --dns-servers " + NetworkHelper.getDefaultGw(context);
+        }
+
+        List<String> lines;
+        if (root) {
+            lines = Shell.SU.run(cmd);
+        } else {
+            lines = Shell.SH.run(cmd);
+        }
 
         String output = "";
         for (String line : lines) {

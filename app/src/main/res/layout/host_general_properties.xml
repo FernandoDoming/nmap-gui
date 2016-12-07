@@ -132,6 +132,41 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/host_hostname_title"
+            android:text="@string/hostname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/PropertyName" />
+
+        <TextView
+            android:id="@+id/host_hostname"
+            android:layout_below="@id/host_hostname_title"
+            android:text="@string/unknown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/PropertyValue"/>
+
+        <Button
+            android:id="@+id/host_hostname_discover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/discover"
+            android:background="@color/transparent"
+            android:textColor="@color/colorAccent"
+            android:onClick="scanDetail"
+            android:tag="hostname"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:padding="15dp">
 
         <TextView

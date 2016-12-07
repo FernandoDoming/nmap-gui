@@ -170,7 +170,7 @@ public class HostDetailActivity extends AppCompatActivity {
     /* Private methods */
 
     private void scanDetail(String detail) {
-        final String target = host.getTarget();
+        final String target = host.getAddress();
         Scan scan = new Scan(target, ScanTypes.HOST_SCAN);
         // TODO: Set intensity accordingly
         scan.setIntensity(ScanTypes.OS_SCAN);

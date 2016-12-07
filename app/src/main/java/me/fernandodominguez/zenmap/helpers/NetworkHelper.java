@@ -1,8 +1,15 @@
 package me.fernandodominguez.zenmap.helpers;
 
+import android.content.Context;
+import android.net.DhcpInfo;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,6 +89,10 @@ public class NetworkHelper {
         return null;
     }
 
+    /**
+     * Get network address from first non-localhost interface with it's subnet mask
+     * @return subnet address (String) or null
+     */
     public static String getNetworkAddress(){
         try {
             List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
@@ -104,5 +115,41 @@ public class NetworkHelper {
             }
         } catch (Exception e) { e.printStackTrace(); } // for now eat exceptions
         return null;
+    }
+
+    /**
+    * Checks wether an IP address is within the private range or not
+     * @return a boolean indicating if the IP addr is within a private range
+    * */
+    public static boolean isPrivateAddress(String ip) throws UnknownHostException {
+        InetAddress address = InetAddress.getByName(ip);
+        return address.isSiteLocalAddress();
+    }
+
+    /**
+    * Gets the default gateway if connected to a WIFI network
+     * @param context A context to call system services on
+     * @return the default gateway (String) or null
+    * */
+    public static String getDefaultGw(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo       = wifiManager.getConnectionInfo();
+
+        if (wifiInfo.getSupplicantState().equals(SupplicantState.COMPLETED)) {
+            DhcpInfo dhcp     = wifiManager.getDhcpInfo();
+            return intToIp(dhcp.gateway);
+        } else {
+            return null;
+        }
+    }
+
+    /* Private methods */
+
+    private static String intToIp(int i) {
+
+        return ( i & 0xFF) + "." +
+               ((i >> 8 ) & 0xFF) + "." +
+               ((i >> 16 ) & 0xFF) + "." +
+               ((i >> 24 ) & 0xFF );
     }
 }
