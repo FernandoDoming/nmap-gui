@@ -151,9 +151,11 @@ public class HostDetailActivity extends AppCompatActivity {
 
         if (host.getServices() != null && !host.getServices().isEmpty()) {
             ListView resultsListView = (ListView) findViewById(R.id.general_result_listview);
-            GeneralResultsListAdapter<Service> adapter =
-                    new GeneralResultsListAdapter<>(this, host.getServices());
-            resultsListView.setAdapter(adapter);
+            if (resultsListView != null) {
+                GeneralResultsListAdapter<Service> adapter =
+                        new GeneralResultsListAdapter<>(this, host.getServices());
+                resultsListView.setAdapter(adapter);
+            }
         }
     }
 
