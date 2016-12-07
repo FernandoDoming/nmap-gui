@@ -25,6 +25,7 @@ import me.fernandodominguez.zenmap.activities.ScanDetailActivity;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.models.host.HostScan;
 import me.fernandodominguez.zenmap.models.network.Host;
+import me.fernandodominguez.zenmap.models.network.HostStatus;
 import me.fernandodominguez.zenmap.parsers.HostScanParser;
 import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
 
@@ -113,7 +114,9 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
     @Override
     protected void onPostExecute(final Scan scan) {
 
+        // TODO: maybe I should implement this method on each activity specific instantiation
         if (context instanceof MainActivity) {
+
             MainActivity mainActivity = (MainActivity) context;
             ProgressBar scanProgress = (ProgressBar) mainActivity.findViewById(R.id.scan_progress);
             scanProgress.setIndeterminate(false);
@@ -155,9 +158,16 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
                 HostScan result = (HostScan) scan.getScanResult();
                 if (result.getHost() != null) {
                     Host host = result.getHost();
-                    activity.addHostDetails(
-                        (ViewGroup) activity.findViewById(R.id.host_general_properties), host
-                    );
+
+                    if ( host.getStatus().toString().equals(HostStatus.DOWN) ) {
+                        Snackbar.make(activity.findViewById(R.id.main_content),
+                                    context.getString(R.string.host_down),
+                                    Snackbar.LENGTH_LONG).show();
+                    } else {
+                        activity.addHostDetails(
+                                (ViewGroup) activity.findViewById(R.id.host_general_properties), host
+                        );
+                    }
                 }
             }
             ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.scan_progress);

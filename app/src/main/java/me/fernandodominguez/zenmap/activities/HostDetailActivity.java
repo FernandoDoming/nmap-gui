@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -23,12 +24,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import me.fernandodominguez.zenmap.R;
+import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
 import me.fernandodominguez.zenmap.adapters.HostPagerAdapter;
 import me.fernandodominguez.zenmap.constants.Extras;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
 import me.fernandodominguez.zenmap.helpers.StringHelper;
 import me.fernandodominguez.zenmap.models.NmapExecutor;
 import me.fernandodominguez.zenmap.models.Scan;
+import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
 
 public class HostDetailActivity extends AppCompatActivity {
@@ -144,6 +147,13 @@ public class HostDetailActivity extends AppCompatActivity {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (host.getServices() != null && !host.getServices().isEmpty()) {
+            ListView resultsListView = (ListView) findViewById(R.id.general_result_listview);
+            GeneralResultsListAdapter<Service> adapter =
+                    new GeneralResultsListAdapter<>(this, host.getServices());
+            resultsListView.setAdapter(adapter);
         }
     }
 

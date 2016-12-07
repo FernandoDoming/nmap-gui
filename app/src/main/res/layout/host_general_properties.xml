@@ -129,4 +129,17 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/services"
+            android:textAppearance="@style/PropertyName"/>
+
+    </RelativeLayout>
+
 </LinearLayout>

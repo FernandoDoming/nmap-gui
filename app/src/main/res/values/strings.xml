@@ -134,9 +134,11 @@
     <string name="scan_failed">The scan failed. If this problem persists please create an issue on the Github repo.</string>
     <string name="scan_deleted">Scan has been deleted</string>
     <string name="scan_details">Scanning for details</string>
+    <string name="host_down">Host appears to be down</string>
 
     <!-- Misc -->
 
+    <string name="services">Services</string>
     <string name="discover">Discover</string>
     <string name="target_title">Target</string>
     <string name="start_time_title">Start time</string>
@@ -150,6 +152,7 @@
         To start a new scan hit the <b>+</b> button on the lower right.\n
         When a scan finishes it will be shown here.
     </string>
+    <string name="empty_notice">No results</string>
 
     <string name="default_version_url">https://s3.amazonaws.com/nmap-dl/nmap-android-ui</string>
     <string name="default_update_url">https://github.com/kost/nmap-android/releases/download</string>

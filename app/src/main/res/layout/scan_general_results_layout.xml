@@ -8,4 +8,11 @@
         android:layout_height="wrap_content"
         android:paddingBottom="50dp" />
 
+    <!-- <TextView
+        android:id="@+id/empty_services"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/empty_notice"
+        android:textAlignment="center"/> -->
+
 </RelativeLayout>

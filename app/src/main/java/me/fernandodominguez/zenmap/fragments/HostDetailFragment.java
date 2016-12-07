@@ -63,9 +63,10 @@ public class HostDetailFragment extends Fragment {
         View rootView = null;
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        NMAP_BINARY_FILE
-                = sharedPrefs.getString(getString(R.string.nmap_binary_path),
-                                        getContext().getFilesDir().getParent() + "/bin/nmap");
+        NMAP_BINARY_FILE = sharedPrefs.getString(
+                getString(R.string.nmap_binary_path),
+                getContext().getFilesDir().getParent() + "/bin/nmap"
+        );
 
         switch (sectionNumber) {
             case GENERAL_SECTION_NUMBER:
@@ -79,6 +80,8 @@ public class HostDetailFragment extends Fragment {
                 View header = inflater.inflate(R.layout.host_general_properties, container, false);
                 fillHeader(header, host);
                 resultsListView.addHeaderView(header, null, false);
+                // Crashes when used in combination with addHeaderView
+                //resultsListView.setEmptyView(rootView.findViewById(R.id.empty_services));
 
                 resultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
