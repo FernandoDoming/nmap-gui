@@ -7,7 +7,13 @@
 
     <SwitchPreference
         android:title="@string/scan_lan_at_startup_preference"
-        android:key="scan_lan_at_startup"
+        android:key="@string/scan_lan_at_startup"
         android:summary="@string/scan_lan_at_startup_summary"
+        android:defaultValue="false" />
+
+    <SwitchPreference
+        android:title="@string/run_always_as_root_preference"
+        android:key="@string/run_always_as_root"
+        android:summary="@string/run_always_as_root_summary"
         android:defaultValue="false" />
 </PreferenceScreen>

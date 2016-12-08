@@ -1,6 +1,7 @@
 package me.fernandodominguez.zenmap.models;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import java.io.IOException;
 import java.util.List;
@@ -81,8 +82,15 @@ public class Nmap {
             cmd += " --dns-servers " + NetworkHelper.getDefaultGw(context);
         }
 
+        SharedPreferences sharedPref = context.getSharedPreferences(
+            context.getPackageName() + "_preferences",
+            Context.MODE_PRIVATE
+        );
+        final boolean alwaysRoot = sharedPref.getBoolean(
+            context.getString(R.string.run_always_as_root), false
+        );
         List<String> lines;
-        if (root) {
+        if (root || alwaysRoot) {
             lines = Shell.SU.run(cmd);
         } else {
             lines = Shell.SH.run(cmd);

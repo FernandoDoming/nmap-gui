@@ -102,10 +102,20 @@
         the lastest available version.\n
         Input it as <b>nmap-X.XX</b>
     </string>
+    <string name="scan_lan_at_startup">scan_lan_at_startup</string>
     <string name="scan_lan_at_startup_preference">Scan LAN at startup</string>
     <string name="scan_lan_at_startup_summary">
         Enabling this option will launch a scan for the LAN you are connected to
         each time the application opens.
+    </string>
+    <string name="nmapbin_version">nmap</string>
+    <string name="nmap_binary_path">NMAP_BINARY_PATH</string>
+
+    <string name="run_always_as_root">always_scan_as_root</string>
+    <string name="run_always_as_root_preference">Scan always as root</string>
+    <string name="run_always_as_root_summary">
+        Scanning as root may yield additional results like MAC addresses and vendors for
+        discovered hosts.
     </string>
 
     <!-- Dialogs -->
@@ -119,7 +129,7 @@
     <string name="dlg_ask2download_no">Cancel and exit</string>
     <string name="dlg_progress_title_download">Download binaries</string>
     <string name="toast_dowload_binary_error">Binary download failed</string>
-    <string name="toast_download_binary_ok">Binary download succeded</string>
+    <string name="toast_download_binary_ok">Binary download succeeded</string>
     <string name="dlg_ask2downloaddata">Additional data will be downloaded to enable additional features. Would you like to proceed?</string>
     <string name="dlg_ask2deletedata">Would you like to delete the downloaded data?</string>
     <string name="dlg_ask2delete_yes">Yes</string>
@@ -131,11 +141,18 @@
 
     <!-- Scan results -->
     <string name="scan_done">Scan %1$s has finished</string>
+    <string name="run_alert">Scan is running</string>
+    <string name="scan_running">Scan for %1$s is running</string>
     <string name="scan_failed">The scan failed. If this problem persists please create an issue on the Github repo.</string>
     <string name="scan_deleted">Scan has been deleted</string>
     <string name="scan_details">Scanning for details</string>
     <string name="host_down">Host appears to be down</string>
     <string name="maybe_host_down">Scan failed. Maybe host is down?</string>
+    <string name="no_scan_notice">
+        There are currently <b>no</b> finished scans.\n
+        To start a new scan hit the <b>+</b> button on the lower right.\n
+        When a scan finishes it will be shown here.
+    </string>
 
     <!-- Misc -->
 
@@ -147,18 +164,10 @@
     <string name="elapsed_time_title">Elapsed time</string>
     <string name="menu_delete">Delete</string>
     <string name="scan_name">Name</string>
-    <string name="run_alert">Scan is running</string>
-    <string name="no_scan_notice">
-        There are currently <b>no</b> finished scans.\n
-        To start a new scan hit the <b>+</b> button on the lower right.\n
-        When a scan finishes it will be shown here.
-    </string>
     <string name="empty_notice">No results</string>
 
     <string name="default_version_url">https://s3.amazonaws.com/nmap-dl/nmap-android-ui</string>
     <string name="default_update_url">https://github.com/kost/nmap-android/releases/download</string>
-    <string name="nmapbin_version">nmap</string>
-    <string name="nmap_binary_path">NMAP_BINARY_PATH</string>
     <string name="summary_title">Summary</string>
     <string name="os">Operative system</string>
     <string name="hostname">Host name</string>

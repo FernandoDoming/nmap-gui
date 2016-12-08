@@ -101,6 +101,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        if (sharedPrefs.getBoolean( getResources().getString(R.string.scan_lan_at_startup), false )) {
+            runLanScan();
+        }
+
         sharedProgressDialog = new ProgressDialog(this);
         sharedProgressDialog.setMessage(getString(R.string.dlg_progress_title_download));
         sharedProgressDialog.setIndeterminate(true);
@@ -149,6 +153,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /* Private methods */
+
+    private void runLanScan() {
+        String target = NetworkHelper.getNetworkAddress();
+        Scan scan = new Scan(target);
+        scan.setType(ScanTypes.NETWORK_SCAN);
+        scan.setIntensity(ScanTypes.HOST_DISCOVERY);
+        runScan(scan);
+        showRunAlert( getResources().getString(R.string.scan_running, target) );
+    }
 
     private void newScan() {
 
