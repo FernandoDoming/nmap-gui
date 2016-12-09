@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
@@ -35,14 +36,26 @@ public class NetworkHelper {
                 if (mac == null) return null;
                 StringBuilder buf = new StringBuilder();
 
-                for (int idx=0; idx<mac.length; idx++)
-                    buf.append(String.format("%02X:", mac[idx]));
+                for (byte aMac : mac) buf.append(String.format("%02X:", aMac));
 
                 if (buf.length() > 0) buf.deleteCharAt(buf.length()-1);
                 return buf.toString();
             }
         } catch (Exception e) { e.printStackTrace(); } // for now eat exceptions
         return null;
+    }
+
+    public static String getIfaceByIp(byte[] ip) {
+        NetworkInterface netInterface = null;
+        try {
+            InetAddress addr = InetAddress.getByAddress(ip);
+            netInterface = NetworkInterface.getByInetAddress(addr);
+        } catch (SocketException | UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        if (netInterface == null) return null;
+        else return netInterface.getDisplayName();
     }
 
     /**

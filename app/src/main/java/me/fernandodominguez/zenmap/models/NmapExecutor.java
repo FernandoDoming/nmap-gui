@@ -3,6 +3,8 @@ package me.fernandodominguez.zenmap.models;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.support.design.widget.Snackbar;
@@ -17,12 +19,14 @@ import org.xmlpull.v1.XmlPullParser;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigInteger;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.activities.HostDetailActivity;
 import me.fernandodominguez.zenmap.activities.MainActivity;
 import me.fernandodominguez.zenmap.activities.ScanDetailActivity;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
+import me.fernandodominguez.zenmap.helpers.NetworkHelper;
 import me.fernandodominguez.zenmap.models.host.HostScan;
 import me.fernandodominguez.zenmap.models.network.Host;
 import me.fernandodominguez.zenmap.models.network.HostStatus;
@@ -82,6 +86,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
             if (scanResult != null) {
                 scanResult.setName(scan.getName());
                 scanResult.setOutput(output);
+                for (Host host : scanResult.getHosts()) enrichHost(host);
                 scan.setScanResult(scanResult);
             } else {
                 Log.w(this.getClass().getName(), "Scan " + scan.getTitle() + " result was null");
@@ -187,5 +192,19 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
         Log.i(this.getClass().getName(), "Scan finished for " + scan.getTarget());
         mWakeLock.release();
         Log.d(this.getClass().getName(), "Wakelock released");
+    }
+
+    private void enrichHost(Host host) {
+
+        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifi.getConnectionInfo();
+        int ipAddress = wifiInfo.getIpAddress();
+        byte[] bytes = BigInteger.valueOf(ipAddress).toByteArray();
+        String iface = NetworkHelper.getIfaceByIp(bytes);
+
+        if (host.getAddress().equals(NetworkHelper.getIPAddress()) ||
+                host.getMac().equals(NetworkHelper.getMACAddress(iface))) {
+            host.setMe(true);
+        }
     }
 }

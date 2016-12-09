@@ -18,6 +18,7 @@ public class Host implements Serializable {
     private String mac;
     private String macVendor;
     private HostStatus status;
+    private boolean isMe;
 
     public static List<String> HOST_DETAILS = Arrays.asList("os", "mac", "mac_vendor", "hostname");
 
@@ -36,9 +37,14 @@ public class Host implements Serializable {
     }
 
     public String getTitle() {
-        if (hostname != null) return hostname;
-        if (address  != null) return address;
-        return mac;
+        String title = "";
+
+        if (isMe) title = "This device - ";
+        if (hostname != null)     title += hostname;
+        else if (address != null) title += address;
+        else title += mac;
+
+        return title;
     }
 
     public String getAddress() {
@@ -105,5 +111,13 @@ public class Host implements Serializable {
 
     public void setHostname(String hostname) {
         this.hostname = hostname;
+    }
+
+    public boolean isMe() {
+        return isMe;
+    }
+
+    public void setMe(boolean me) {
+        isMe = me;
     }
 }
