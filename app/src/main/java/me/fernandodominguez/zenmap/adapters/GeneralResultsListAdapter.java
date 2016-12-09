@@ -59,9 +59,13 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
         if (result instanceof Host) {
             Host host = (Host) result;
             title.setText(host.getTitle());
-            subtitle.setText(
+            if (host.getSubtitle() != null) {
+                subtitle.setText(host.getSubtitle());
+            } else {
+                subtitle.setText(
                     context.getString(R.string.host_subtitle, host.getStatus().getState())
-            );
+                );
+            }
             extra.setText(StringHelper.truncate(host.getStatus().getReason(), 20));
             icon.setImageResource(ScanHelper.getDrawableIcon(host.getOs()));
 

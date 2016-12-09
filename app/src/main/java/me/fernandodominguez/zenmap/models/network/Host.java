@@ -47,6 +47,13 @@ public class Host implements Serializable {
         return title;
     }
 
+    public String getSubtitle() {
+        if (macVendor != null) return macVendor;
+        if (mac != null) return mac;
+
+        return null;
+    }
+
     public String getAddress() {
         return address;
     }
