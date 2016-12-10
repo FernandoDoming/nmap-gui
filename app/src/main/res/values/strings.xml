@@ -77,16 +77,16 @@
 
     <!-- Host scan options -->
     <string name="version_opts">--version</string>
-    <string name="regular_scan_opts">-v -sV</string>
-    <string name="os_scan_opts">-v -O</string>
-    <string name="os_service_opts">-v -O -sV</string>
-    <string name="intense_scan_opts">-A -T4 -v</string>
-    <string name="intense_scan_all_tcp_opts">-p 1-65535 -A -T4 -v</string>
+    <string name="regular_scan_opts">-sV</string>
+    <string name="os_scan_opts">-O</string>
+    <string name="os_service_opts">-O -sV</string>
+    <string name="intense_scan_opts">-A -T4</string>
+    <string name="intense_scan_all_tcp_opts">-p 1-65535 -A -T4</string>
     <!-- Network scan options -->
-    <string name="host_discovery_opts">-sP -v --reason</string>
-    <string name="host_service_discovery_opts">-sV -v --reason</string>
-    <string name="host_os_discovery_opts">-O -v --reason</string>
-    <string name="host_os_service_discovery_opts">-O -sV -v --reason</string>
+    <string name="host_discovery_opts">-sP --reason</string>
+    <string name="host_service_discovery_opts">-sV --reason</string>
+    <string name="host_os_discovery_opts">-O --reason</string>
+    <string name="host_os_service_discovery_opts">-O -sV --reason</string>
 
     <!-- Misc options -->
     <string name="xml_opt">-oX -</string>

@@ -34,7 +34,7 @@ import me.fernandodominguez.zenmap.parsers.HostScanParser;
 import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
 
 /**
- * Created by fernando on 29/12/15.
+ * Coded by fernando on 29/12/15.
  */
 public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
 
