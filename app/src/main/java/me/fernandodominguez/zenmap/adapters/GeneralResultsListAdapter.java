@@ -13,11 +13,12 @@ import java.util.List;
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.helpers.ScanHelper;
 import me.fernandodominguez.zenmap.helpers.StringHelper;
+import me.fernandodominguez.zenmap.holders.HostViewHolder;
 import me.fernandodominguez.zenmap.models.host.Service;
 import me.fernandodominguez.zenmap.models.network.Host;
 
 /**
- * Created by fernando on 03/01/16.
+ * Coded by fernando on 03/01/16.
  */
 public class GeneralResultsListAdapter<T> extends BaseAdapter {
 
@@ -46,39 +47,50 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.general_results_row, parent, false);
 
-        TextView title = (TextView) rowView.findViewById(R.id.general_row_title);
-        TextView subtitle = (TextView) rowView.findViewById(R.id.general_row_subtitle);
-        TextView extra = (TextView) rowView.findViewById(R.id.general_row_extra);
-        ImageView icon = (ImageView) rowView.findViewById(R.id.general_row_icon);
+        HostViewHolder holder;
+
+        if (convertView == null) {      // Inflate the view
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.general_results_row, parent, false);
+
+            holder = new HostViewHolder();
+
+            holder.title = (TextView) convertView.findViewById(R.id.general_row_title);
+            holder.subtitle = (TextView) convertView.findViewById(R.id.general_row_subtitle);
+            holder.extra = (TextView) convertView.findViewById(R.id.general_row_extra);
+            holder.icon = (ImageView) convertView.findViewById(R.id.general_row_icon);
+            convertView.setTag(holder);
+
+        } else {        // Recycle the previously inflated view
+            holder = (HostViewHolder) convertView.getTag();
+        }
 
         T result = elements.get(position);
         if (result instanceof Host) {
             Host host = (Host) result;
-            title.setText(host.getTitle());
+            holder.title.setText(host.getTitle());
             if (host.getSubtitle() != null) {
-                subtitle.setText(host.getSubtitle());
+                holder.subtitle.setText(host.getSubtitle());
             } else {
-                subtitle.setText(
+                holder.subtitle.setText(
                     context.getString(R.string.host_subtitle, host.getStatus().getState())
                 );
             }
-            extra.setText(StringHelper.truncate(host.getStatus().getReason(), 20));
-            icon.setImageResource(ScanHelper.getDrawableIcon(host.getOs()));
+            holder.extra.setText(StringHelper.truncate(host.getStatus().getReason(), 20));
+            holder.icon.setImageResource(ScanHelper.getDrawableIcon(host.getOs()));
 
         } else if (result instanceof Service) {
             Service service = (Service) result;
-            title.setText(
+            holder.title.setText(
                     context.getString(R.string.service_title, service.getService(), service.getPort())
             );
-            subtitle.setText(context.getString(R.string.service_subtitle, service.getStatus().getState()));
-            extra.setText(StringHelper.truncate(service.getVersion(), 20));
-            icon.setImageResource(R.drawable.service);
+            holder.subtitle.setText(context.getString(R.string.service_subtitle, service.getStatus().getState()));
+            holder.extra.setText(StringHelper.truncate(service.getVersion(), 20));
+            holder.icon.setImageResource(R.drawable.service);
         }
 
-        return rowView;
+        return convertView;
     }
 }
