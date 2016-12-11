@@ -1,9 +1,7 @@
 package me.fernandodominguez.zenmap.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,11 +35,6 @@ public class HostDetailFragment extends Fragment {
     private final static int NETWORK_MAP_SECTION_NUMBER = 2;
     private final static int RAW_SECTION_NUMBER = 3;
 
-    private static String NMAP_BINARY_FILE;
-
-    public HostDetailFragment() {
-    }
-
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -62,11 +55,7 @@ public class HostDetailFragment extends Fragment {
         final Host host = (Host) getArguments().getSerializable(ARG_SCAN_RESULT);
         View rootView = null;
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        NMAP_BINARY_FILE = sharedPrefs.getString(
-                getString(R.string.nmap_binary_path),
-                getContext().getFilesDir().getParent() + "/bin/nmap"
-        );
+        if (host == null) return null;
 
         switch (sectionNumber) {
             case GENERAL_SECTION_NUMBER:
@@ -110,13 +99,11 @@ public class HostDetailFragment extends Fragment {
     }
 
     private MaterialDialog showDetailDialog(String title) {
-        MaterialDialog dialog = new MaterialDialog.Builder(getContext())
+        return new MaterialDialog.Builder(getContext())
                 .title(title)
                 .customView(R.layout.item_detail_dialog, true)
                 .positiveText(R.string.dismiss)
                 .show();
-
-        return dialog;
     }
 
     private void fillHeader(View header, Host host) {

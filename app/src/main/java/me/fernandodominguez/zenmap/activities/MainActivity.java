@@ -15,7 +15,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +33,6 @@ import java.util.List;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.ScansListAdapter;
-import me.fernandodominguez.zenmap.async.DnsNameResolutionTask;
 import me.fernandodominguez.zenmap.async.SimpleHttpTask;
 import me.fernandodominguez.zenmap.constants.Extras;
 import me.fernandodominguez.zenmap.constants.ScanTypes;
@@ -51,11 +49,9 @@ public class MainActivity extends AppCompatActivity {
     private Scan newScan = null;
     private List<Scan> scans = new ArrayList<>();
     private ScansListAdapter adapter = null;
-    private SharedPreferences sharedPrefs;
 
     private ProgressBar scanProgress;
     public CoordinatorLayout coordinatorLayout;
-    private ListView scanListView;
     public ProgressDialog sharedProgressDialog;
 
     private final Context context = this;
@@ -73,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         scanProgress = (ProgressBar) findViewById(R.id.scan_progress);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator);
-        scanListView = (ListView) findViewById(R.id.scans_list);
+        ListView scanListView = (ListView) findViewById(R.id.scans_list);
         setSupportActionBar(toolbar);
 
         adapter = new ScansListAdapter(this, scans);
@@ -87,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         NMAP_BINARY_FILE = getFilesDir().getParent() + "/bin/nmap";
         editor.putString(getString(R.string.nmap_binary_path), NMAP_BINARY_FILE);
@@ -135,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         return newScan;
     }
 
+    @SuppressWarnings("deprecation")
     public String doNextEabi() {
         switch (currentEabi++) {
             case 0:
@@ -210,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
     private void newNetworkScan() {
         MaterialDialog dialog = newBaseScan(R.string.network_scan_title, R.layout.new_network_scan_dialog);
         View view = dialog.getCustomView();
+
+        if (view == null) return;
+
         EditText target = (EditText) view.findViewById(R.id.input_target);
         if (target != null) {
             target.setText(NetworkHelper.getNetworkAddress());
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         newScan = configureScanFromDialog(dialog, newScan);
-                        if (newScan.getTarget() != null) {
+                        if (newScan != null && newScan.getTarget() != null) {
                             runScan(newScan);
                         }
                     }
@@ -249,6 +249,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Scan configureScanFromDialog(MaterialDialog dialog, Scan scan) {
         View view = dialog.getCustomView();
+        if (view == null) return null;
+
         EditText targetEditText = (EditText) view.findViewById(R.id.input_target);
         Spinner  intensitySpinner = (Spinner) view.findViewById(R.id.intensity_spinner);
 
@@ -256,12 +258,7 @@ public class MainActivity extends AppCompatActivity {
         scan.setIntensity(intensity);
 
         String target = targetEditText.getText().toString();
-        // if it is NOT an IP address try to resolve the name
-        if ( !Patterns.IP_ADDRESS.matcher(target).matches() ) {     // TODO IPv6
-            new DnsNameResolutionTask(context).execute(target);
-        } else {
-            scan.setTarget(target);
-        }
+        scan.setTarget(target);
 
         return scan;
     }

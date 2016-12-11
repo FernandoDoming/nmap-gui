@@ -115,7 +115,9 @@ public class ScanDetailFragment extends Fragment {
         target.setText(scanResult.getTarget());
         startTime.setText( DateHelper.getDate(scanResult.getStartTime()) );
         endTime.setText( DateHelper.getDate(scanResult.getEndTime()) );
-        elapsedTime.setText( scanResult.getElapsed() + " seconds" );
+        elapsedTime.setText(getActivity().getResources().getString(
+                R.string.elapsed_seconds, scanResult.getElapsed()
+        ));
         summary.setText( scanResult.getSummary() );
     }
 }

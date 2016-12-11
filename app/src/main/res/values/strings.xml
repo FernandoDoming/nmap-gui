@@ -148,6 +148,7 @@
     <string name="scan_details">Scanning for details</string>
     <string name="host_down">Host appears to be down</string>
     <string name="maybe_host_down">Scan failed. Maybe host is down?</string>
+    <string name="elapsed_seconds">%1$.2f seconds</string>
     <string name="no_scan_notice">
         There are currently <b>no</b> finished scans.\n
         To start a new scan hit the <b>+</b> button on the lower right.\n

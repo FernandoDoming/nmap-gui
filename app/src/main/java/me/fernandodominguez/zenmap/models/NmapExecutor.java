@@ -60,7 +60,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
     @Override
     protected Scan doInBackground(Scan... params) {
         scan = params[0];
-        String output = null;
+        String output;
         ScanResult scanResult = null;
         Log.i(this.getClass().getName(), "Starting scan for " + scan.getTarget());
         Log.i(this.getClass().getName(), "Scan intensity: "   + scan.getIntensity());
@@ -192,7 +192,6 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
     }
 
     private void enrichHost(Host host) {
-
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifi.getConnectionInfo();
         int ipAddress = wifiInfo.getIpAddress();

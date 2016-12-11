@@ -84,8 +84,8 @@ public class ScanDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            scan.run(context, NMAP_BINARY_FILE);
-            startRefreshingAnimation();
+                scan.run(context, NMAP_BINARY_FILE);
+                startRefreshingAnimation();
             }
         });
 
