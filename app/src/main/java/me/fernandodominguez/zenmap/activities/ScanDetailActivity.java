@@ -1,11 +1,13 @@
 package me.fernandodominguez.zenmap.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -19,7 +21,9 @@ import android.view.animation.AnimationUtils;
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.adapters.SectionsPagerAdapter;
 import me.fernandodominguez.zenmap.constants.Extras;
+import me.fernandodominguez.zenmap.fragments.ScanDetailFragment;
 import me.fernandodominguez.zenmap.models.Scan;
+import me.fernandodominguez.zenmap.models.network.Host;
 
 public class ScanDetailActivity extends AppCompatActivity {
 
@@ -87,6 +91,19 @@ public class ScanDetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) return;
+
+        Host host = (Host) data.getSerializableExtra(Extras.HOST_EXTRA);
+        int position = data.getIntExtra(Extras.HOST_POSITION_EXTRA, 0);
+        Fragment frag = mSectionsPagerAdapter.getItem(0);
+
+        if (frag instanceof ScanDetailFragment) {
+            ScanDetailFragment fragment = (ScanDetailFragment) frag;
+            fragment.updateItem(position, host);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

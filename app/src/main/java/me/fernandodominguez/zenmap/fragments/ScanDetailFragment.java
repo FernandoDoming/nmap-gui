@@ -14,6 +14,7 @@ import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.activities.HostDetailActivity;
 import me.fernandodominguez.zenmap.adapters.GeneralResultsListAdapter;
 import me.fernandodominguez.zenmap.constants.Extras;
+import me.fernandodominguez.zenmap.constants.Requests;
 import me.fernandodominguez.zenmap.helpers.DateHelper;
 import me.fernandodominguez.zenmap.models.ScanResult;
 import me.fernandodominguez.zenmap.models.network.Host;
@@ -26,15 +27,11 @@ public class ScanDetailFragment extends Fragment {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private final static String ARG_SECTION_NUMBER = "section_number";
-    private final static String ARG_SCAN_RESULT    = "scan";
-
     private final static int GENERAL_SECTION_NUMBER = 1;
     private final static int NETWORK_MAP_SECTION_NUMBER = 2;
     private final static int RAW_SECTION_NUMBER = 3;
 
-    public ScanDetailFragment() {
-    }
+    private GeneralResultsListAdapter<Host> adapter;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -43,8 +40,8 @@ public class ScanDetailFragment extends Fragment {
     public static ScanDetailFragment newInstance(int sectionNumber, ScanResult scanResult) {
         ScanDetailFragment fragment = new ScanDetailFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        args.putSerializable(ARG_SCAN_RESULT, scanResult);
+        args.putInt(Extras.ARG_SECTION_NUMBER, sectionNumber);
+        args.putSerializable(Extras.ARG_SCAN_RESULT, scanResult);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,23 +49,26 @@ public class ScanDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
-        final ScanResult scanResult = (ScanResult) getArguments().getSerializable(ARG_SCAN_RESULT);
+        int sectionNumber = getArguments().getInt(Extras.ARG_SECTION_NUMBER);
+        final ScanResult scanResult = (ScanResult) getArguments().getSerializable(Extras.ARG_SCAN_RESULT);
         View rootView = null;
+
+        if (scanResult == null) return null;
 
         switch (sectionNumber) {
             case GENERAL_SECTION_NUMBER:
                 rootView = inflater.inflate(R.layout.scan_general_results_layout, container, false);
                 ListView resultsListView = (ListView) rootView.findViewById(R.id.general_result_listview);
 
-                GeneralResultsListAdapter<Host> adapter = new GeneralResultsListAdapter<>(getActivity(), scanResult.getHosts());
+                adapter = new GeneralResultsListAdapter<>(getActivity(), scanResult.getHosts());
                 resultsListView.setAdapter(adapter);
 
                 resultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Host host = scanResult.getHosts().get(position - 1);
-                        showHostDetail(host);
+                    int pos = position - 1;
+                    Host host = scanResult.getHosts().get(pos);
+                    showHostDetail(host, pos);
                     }
                 });
 
@@ -90,10 +90,19 @@ public class ScanDetailFragment extends Fragment {
         return rootView;
     }
 
-    private void showHostDetail(Host host) {
+    public GeneralResultsListAdapter getAdapter() {
+        return adapter;
+    }
+
+    public void updateItem(int position, Host host) {
+        adapter.updateItem(position, host);
+    }
+
+    private void showHostDetail(Host host, int pos) {
         Intent intent = new Intent(getContext(), HostDetailActivity.class);
         intent.putExtra(Extras.HOST_EXTRA, host);
-        startActivity(intent);
+        intent.putExtra(Extras.HOST_POSITION_EXTRA, pos);
+        startActivityForResult(intent, Requests.UPDATE_HOST);
     }
 
     private void fillHeader(View header, ScanResult scanResult) {

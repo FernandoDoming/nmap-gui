@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import java.util.HashMap;
+
 import me.fernandodominguez.zenmap.fragments.ScanDetailFragment;
 import me.fernandodominguez.zenmap.models.ScanResult;
 
@@ -20,15 +22,22 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     private ScanResult scanResult;
 
+    private HashMap<Integer, Fragment> items;
+
     public SectionsPagerAdapter(FragmentManager fm, ScanResult scanResult) {
         super(fm);
         this.scanResult = scanResult;
+        this.items = new HashMap<>();
     }
 
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
-        return ScanDetailFragment.newInstance(position + 1, scanResult);
+        Integer pos = position + 1;
+        if (items.get(pos) == null) {
+            items.put(pos, ScanDetailFragment.newInstance(pos, scanResult));
+        }
+        return items.get(pos);
     }
 
     @Override

@@ -11,7 +11,6 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -172,9 +171,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
                                     context.getString(R.string.host_down),
                                     Snackbar.LENGTH_LONG).show();
                     } else {
-                        activity.addHostDetails(
-                                (ViewGroup) activity.findViewById(R.id.host_general_properties), host
-                        );
+                        activity.setResult(host);
                     }
                 }
 

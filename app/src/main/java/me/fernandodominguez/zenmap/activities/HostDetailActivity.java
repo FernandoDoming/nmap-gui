@@ -1,6 +1,8 @@
 package me.fernandodominguez.zenmap.activities;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,7 +22,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import me.fernandodominguez.zenmap.R;
@@ -56,14 +57,16 @@ public class HostDetailActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
     private Host host;
+    private int hostPosition;
     private String NMAP_BINARY_FILE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_detail);
+        setContentView(R.layout.activity_host_detail);
 
         host = (Host) getIntent().getSerializableExtra(Extras.HOST_EXTRA);
+        hostPosition = getIntent().getIntExtra(Extras.HOST_POSITION_EXTRA, 0);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,15 +90,6 @@ public class HostDetailActivity extends AppCompatActivity {
         NMAP_BINARY_FILE
                 = sharedPrefs.getString(getString(R.string.nmap_binary_path),
                 getFilesDir().getParent() + "/bin/nmap");
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
     }
 
 
@@ -140,11 +134,7 @@ public class HostDetailActivity extends AppCompatActivity {
                     TextView tv = (TextView) viewGroup.findViewById(tvResId);
                     tv.setText(data);
                 }
-            } catch (NoSuchMethodException e) {     // No multi-except catch due to min API lvl
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {     // No multi-except catch due to min API lvl
                 e.printStackTrace();
             }
         }
@@ -167,6 +157,17 @@ public class HostDetailActivity extends AppCompatActivity {
                 Snackbar.LENGTH_LONG).show();
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.scan_progress);
         progressBar.setIndeterminate(true);
+    }
+
+    public void setResult(Host host) {
+        Intent intent = new Intent(context, HostDetailActivity.class);
+        intent.putExtra(Extras.HOST_EXTRA, host);
+        intent.putExtra(Extras.HOST_POSITION_EXTRA, hostPosition);
+        // Return the host to the calling activity
+        setResult(Activity.RESULT_OK, intent);
+        // Redisplay activity with new info
+        finish();
+        startActivity(intent);
     }
 
     /* Private methods */

@@ -93,4 +93,9 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
 
         return convertView;
     }
+
+    public void updateItem(int position, T element) {
+        elements.set(position, element);
+        notifyDataSetChanged();
+    }
 }
