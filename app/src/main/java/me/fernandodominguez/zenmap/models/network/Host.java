@@ -7,7 +7,7 @@ import java.util.List;
 import me.fernandodominguez.zenmap.models.host.Service;
 
 /**
- * Created by fernando on 30/12/15.
+ * Coded by fernando on 30/12/15.
  */
 public class Host implements Serializable {
 
@@ -20,7 +20,9 @@ public class Host implements Serializable {
     private HostStatus status;
     private boolean isMe;
 
-    public static List<String> HOST_DETAILS = Arrays.asList("os", "mac", "mac_vendor", "hostname");
+    public static List<String> HOST_DETAILS = Arrays.asList(
+            "os", "mac", "mac_vendor", "hostname"
+    );
 
     public Host() {
     }

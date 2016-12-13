@@ -170,11 +170,34 @@
         android:padding="15dp">
 
         <TextView
+            android:id="@+id/services_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/services"
             android:textAppearance="@style/PropertyName"/>
 
+        <TextView
+            android:id="@+id/empty_services"
+            android:layout_below="@id/services_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="30dp"
+            android:text="@string/no_services"
+            android:textAlignment="center"/>
+
+        <Button
+            android:id="@+id/host_services_discover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/discover"
+            android:background="@color/transparent"
+            android:textColor="@color/colorAccent"
+            android:onClick="scanDetail"
+            android:tag="services"
+            android:layout_alignBaseline="@+id/services_title"
+            android:layout_alignBottom="@+id/services_title"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
 </LinearLayout>

@@ -69,8 +69,12 @@ public class HostDetailFragment extends Fragment {
                 View header = inflater.inflate(R.layout.host_general_properties, container, false);
                 fillHeader(header, host);
                 resultsListView.addHeaderView(header, null, false);
-                // Crashes when used in combination with addHeaderView
+                //TODO: find why the below line crashes when used in combination with addHeaderView
                 //resultsListView.setEmptyView(rootView.findViewById(R.id.empty_services));
+                if ( !host.getServices().isEmpty() ) {
+                    rootView.findViewById(R.id.empty_services).setVisibility(View.GONE);
+                    rootView.findViewById(R.id.host_services_discover).setVisibility(View.GONE);
+                }
 
                 resultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override

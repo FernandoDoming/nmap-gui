@@ -166,6 +166,7 @@
     <string name="menu_delete">Delete</string>
     <string name="scan_name">Name</string>
     <string name="empty_notice">No results</string>
+    <string name="no_services">No services found</string>
 
     <string name="default_version_url">https://s3.amazonaws.com/nmap-dl/nmap-android-ui</string>
     <string name="default_update_url">https://github.com/kost/nmap-android/releases/download</string>
