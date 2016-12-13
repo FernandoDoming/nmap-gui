@@ -41,7 +41,6 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
     private PowerManager.WakeLock mWakeLock;
 
     private Nmap nmap;
-    private Scan scan;
 
     public NmapExecutor(Context context, String binary) {
         this.context = context;
@@ -59,7 +58,7 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
 
     @Override
     protected Scan doInBackground(Scan... params) {
-        scan = params[0];
+        Scan scan = params[0];
         String output;
         ScanResult scanResult = null;
         Log.i(this.getClass().getName(), "Starting scan for " + scan.getTarget());
@@ -192,6 +191,8 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
     }
 
     private void enrichHost(Host host) {
+        if (host == null) return;
+
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifi.getConnectionInfo();
         int ipAddress = wifiInfo.getIpAddress();

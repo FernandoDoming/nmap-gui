@@ -22,6 +22,10 @@
             android:id="@+id/general_row_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLength="30"
+            android:ellipsize="marquee"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
             android:textAppearance="@style/PropertyName"/>
 
         <TextView
