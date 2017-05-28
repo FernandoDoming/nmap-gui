@@ -12,6 +12,7 @@ public class HostStatus implements Serializable {
 
     public static final String UP = "up";
     public static final String DOWN = "down";
+    public static final String UNKNOWN = "unknown";
 
     public HostStatus(String state) {
         this.state = state;

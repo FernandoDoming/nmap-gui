@@ -32,7 +32,7 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return elements.size();
+        return elements != null ? elements.size() : 0;
     }
 
     @Override
@@ -78,7 +78,9 @@ public class GeneralResultsListAdapter<T> extends BaseAdapter {
                     context.getString(R.string.host_subtitle, host.getStatus().getState())
                 );
             }
-            holder.extra.setText(StringHelper.truncate(host.getStatus().getReason(), 20));
+            if (host.getStatus() != null && host.getStatus().getReason() != null) {
+                holder.extra.setText(StringHelper.truncate(host.getStatus().getReason(), 20));
+            }
             holder.icon.setImageResource(ScanHelper.getDrawableIcon(host.getOs()));
 
         } else if (result instanceof Service) {

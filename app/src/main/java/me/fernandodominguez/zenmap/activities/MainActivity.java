@@ -146,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
         showRunAlert(getResources().getString(R.string.run_alert));
         scan.run(context, NMAP_BINARY_FILE);
 
+        if (scan.getType() == ScanTypes.NETWORK_SCAN) {
+
+        }
+
         scanProgress.setIndeterminate(true);
     }
 

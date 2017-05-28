@@ -15,10 +15,17 @@ import android.widget.ProgressBar;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import me.fernandodominguez.zenmap.R;
 import me.fernandodominguez.zenmap.activities.HostDetailActivity;
@@ -29,6 +36,7 @@ import me.fernandodominguez.zenmap.helpers.NetworkHelper;
 import me.fernandodominguez.zenmap.models.host.HostScan;
 import me.fernandodominguez.zenmap.models.network.Host;
 import me.fernandodominguez.zenmap.models.network.HostStatus;
+import me.fernandodominguez.zenmap.models.network.NetworkScan;
 import me.fernandodominguez.zenmap.parsers.HostScanParser;
 import me.fernandodominguez.zenmap.parsers.NetworkScanParser;
 
@@ -70,15 +78,31 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
 
             // Parse the result into POJOs
             XmlPullParser parser = Xml.newPullParser();
-
             parser.setInput(new StringReader(output));
+
             if (scan.getType() == ScanTypes.HOST_SCAN) {
+                // Host scan
                 scanResult = new HostScanParser().parse(parser);
+
             } else if (scan.getType() == ScanTypes.NETWORK_SCAN) {
+                // Network scan
                 scanResult = new NetworkScanParser().parse(parser);
                 scanResult.setTarget(scan.getTarget());
+
+                try {
+                    NetworkScan ns = (NetworkScan) scanResult;
+                    for (Host h : readArpTable()) {
+                        ns.addHost(h);
+                    }
+                } catch (ClassCastException e) {
+                    Log.e(this.getClass().getName(),
+                            "Could not add ARP hosts because scanResult is not a NetworkScan");
+                }
+
             } else {
-                Log.e(this.getClass().getName(), "Scan is neither HOST nor NETWORK. Scan will fail.");
+                // Neither
+                Log.e(this.getClass().getName(),
+                        "Scan is neither HOST nor NETWORK. Scan will fail.");
             }
 
             if (scanResult != null) {
@@ -188,6 +212,33 @@ public class NmapExecutor extends AsyncTask<Scan, Integer, Scan> {
         Log.i(this.getClass().getName(), "Scan finished for " + scan.getTarget());
         mWakeLock.release();
         Log.d(this.getClass().getName(), "Wakelock released");
+    }
+
+    private List<Host> readArpTable() {
+        List<Host> hosts = new ArrayList<>();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("/proc/net/arp"));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                String[] splitted = line.split(" +");
+                if (splitted.length >= 4) {
+                    // Basic sanity check
+                    String mac = splitted[3];
+                    String ip = splitted[0];
+
+                    if (mac.matches("..:..:..:..:..:..") && !mac.equals("00:00:00:00:00:00")) {
+                        HostStatus status = new HostStatus(HostStatus.UNKNOWN, "ARP table entry");
+                        hosts.add(new Host(ip, mac, status));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return hosts;
     }
 
     private void enrichHost(Host host) {

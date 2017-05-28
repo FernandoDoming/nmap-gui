@@ -1,6 +1,7 @@
 package me.fernandodominguez.zenmap.models.network;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,12 +29,20 @@ public class Host implements Serializable {
     }
 
     public Host(String address, HostStatus status) {
-        this.address = address;
-        this.status = status;
+        this(address, null, status);
     }
 
-    public Host(String address, List<Service> services, HostStatus status) {
+    public Host(String address, String mac) {
+        this(address, mac, new HostStatus(HostStatus.UNKNOWN));
+    }
+
+    public Host(String address, String mac, HostStatus status) {
+        this(address, mac, new ArrayList<Service>(), status);
+    }
+
+    public Host(String address, String mac, List<Service> services, HostStatus status) {
         this.address  = address;
+        this.mac      = mac;
         this.services = services;
         this.status   = status;
     }
