@@ -6,13 +6,17 @@ import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static android.content.Context.WIFI_SERVICE;
 
 /**
  * Created by fernando on 07/02/16.
@@ -103,17 +107,28 @@ public class NetworkHelper {
     }
 
     /**
-     * Get network address from first non-localhost interface with it's subnet mask
+     * Get the private network address from first non-localhost interface with it's subnet mask
      * @return subnet address (String) or null
      */
     public static String getNetworkAddress(){
         try {
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            List<NetworkInterface> interfaces = new ArrayList<NetworkInterface>();
+            // It is usually named wlan0
+            if (NetworkInterface.getByName("wlan0") != null) {
+                interfaces.add( NetworkInterface.getByName("wlan0") );
+            }
+            // If not get all interfaces
+            else {
+                interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            }
+
+
             for (NetworkInterface iface : interfaces) {
                 List<InterfaceAddress> addrs = iface.getInterfaceAddresses();
                 for (InterfaceAddress interfaceAddress : addrs) {
                     InetAddress inetAddress = interfaceAddress.getAddress();
-                    if (!inetAddress.isLoopbackAddress()) {
+                    if (!inetAddress.isLoopbackAddress() &&
+                            inetAddress.isSiteLocalAddress()) {
 
                         String sAddr = inetAddress.getHostAddress();
                         boolean isIPv4 = sAddr.indexOf(':') < 0;
@@ -123,6 +138,7 @@ public class NetworkHelper {
                             SubnetHelper helper = new SubnetHelper(sAddr + "/" + prefix);
                             return helper.getInfo().getNetworkAddress() + "/" + prefix;
                         }
+                        // TODO: IPv6
                     }
                 }
             }
@@ -145,7 +161,7 @@ public class NetworkHelper {
      * @return the default gateway (String) or null
     * */
     public static String getDefaultGw(Context context) {
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo       = wifiManager.getConnectionInfo();
 
         if (wifiInfo.getSupplicantState().equals(SupplicantState.COMPLETED)) {
